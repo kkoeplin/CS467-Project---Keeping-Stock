@@ -1,0 +1,16 @@
+{% if items %}
+    {% for i in items %}
+        <a href="#" class="item-card">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUbBKzRsmPWXNQhwgKZ2Ex4guze691jp_eNA&s">
+            <div>
+                <p class="item-card-title">{{ i[0] }}</p>
+                <p class="item-card-box">Box: {{ i[1] }}</p>
+                <div>
+                    {% for t in i[2] %}
+                        <span class="item-card-tag">{{ t }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </a>
+    {% endfor %}
+{% endif %}

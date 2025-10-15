@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Find My Stuff{% endblock %}
+
+{% block head %}
+<script src="{{ url_for('static', filename='htmx.min.js') }}"></script>
+
+{% endblock %}
+
+{% block content %}
+<h1>Find My Stuff</h1>
+
+<div id="search-form">
+    <form
+        hx-get="{{ url_for('gallery.filtered_view') }}"
+        hx-target="#gallery-items"
+        hx-trigger="keyup changed delay:300ms from:input, change from:select, change from:input[name='tags']"
+    >
+        <input id="search-bar" type="search" name="search" placeholder="Search"/>
+
+        <select id="select-dropdown" name="box">
+            <option value="">All Boxes</option>
+            {% for b in all_boxes %}
+                <option value="{{ b }}">{{ b }}</option>
+            {% endfor %}
+        </select>
+
+        <div id="tags">
+            {% for t in all_tags %}
+                <label class="tag" data-checked="false">
+                    <input
+                        type="checkbox"
+                        class="tag-checkbox"
+                        name="tags"
+                        value="{{ t }}"
+                    >
+                    <span>{{ t }}</span>
+                </label>
+            {% endfor %}
+        </div>
+    </form>
+
+    <div id="gallery-items">
+        {% include "gallery_items.html" %}
+    </div>
+</div>
+
+<script>
+    document.addEventListener("change", function (e) {
+        if (!e.target.matches(".tag-checkbox")) return;
+        const label = e.target.closest(".tag");
+        const checked = e.target.checked;
+        label.dataset.checked = checked ? "true" : "false";
+        let x = label.querySelector(".tag-x");
+        if (checked) {
+        x = document.createElement("span");
+        x.className = "tag-x";
+        x.textContent = "✕";
+        label.appendChild(x);
+        } else if (!checked) {
+        x.remove();
+        }
+    });
+</script>
+{% endblock %}
