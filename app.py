@@ -1,5 +1,6 @@
 from flask import Flask, render_template
 from routes.item_routes import item_bp
+from routes.gallery_routes import gallery_bp
 from services.mongo_service import init_db
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -16,7 +17,7 @@ app.config["AI_CLIENT"] = ai_client
 
 # Register blueprints
 app.register_blueprint(item_bp, url_prefix="/items")
-
+app.register_blueprint(gallery_bp, url_prefix="/gallery")
 
 @app.route("/")
 def home():
