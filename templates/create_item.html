@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Create Item{% endblock %}
+
+{% block content %}
+<h2>Create New Item</h2>
+
+<!-- Camera Feed -->
+<video id="cameraFeed" autoplay playsinline></video>
+<button id="captureBtn" class="take-image-btn">Capture</button>
+
+<!-- Preview -->
+<div id="preview" hidden>
+    <img id="capturedImage" alt="Captured item preview">
+    <p><strong>Description:</strong> <span id="desc"></span></p>
+    <p><strong>Tags:</strong> <span id="tags"></span></p>
+    <button id="backBtn" class="take-image-btn grey">Back</button>
+</div>
+
+<script>
+    const video = document.getElementById('cameraFeed');
+    const captureBtn = document.getElementById('captureBtn');
+    const preview = document.getElementById('preview');
+    const imgTag = document.getElementById('capturedImage');
+    const descSpan = document.getElementById('desc');
+    const tagsSpan = document.getElementById('tags');
+    const backBtn = document.getElementById('backBtn');
+    let mediaStream;
+
+    // start camera
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => { mediaStream = stream; video.srcObject = stream; })
+        .catch(() => alert('Camera access denied.'));
+
+    captureBtn.onclick = async () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
+        const imageData = canvas.toDataURL('image/png');
+
+        imgTag.src = imageData;
+        preview.hidden = false;
+
+        try {
+            const res = await fetch('/items/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ image: imageData })
+            });
+            const result = await res.json();
+
+            if (result.success) {
+                descSpan.textContent = result.description;
+                tagsSpan.textContent = result.tags.join(', ');
+            } else {
+                descSpan.textContent = 'Error generating description.';
+                tagsSpan.textContent = '';
+            }
+        } catch {
+            descSpan.textContent = 'Request failed.';
+        }
+    };
+
+    backBtn.onclick = () => {
+        mediaStream?.getTracks().forEach(t => t.stop());
+        window.location.href = '/';
+    };
+</script>
+{% endblock %}
