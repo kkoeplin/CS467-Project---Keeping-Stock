@@ -73,7 +73,11 @@ nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
+<<<<<<< HEAD
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+=======
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+>>>>>>> 6fbf6f3be79b7b0259d5d92425890e232a86c059
 }
 
 nav .logo {
@@ -100,7 +104,13 @@ main {
 }
 
 /* Headings */
+<<<<<<< HEAD
 h1, h2, h3 {
+=======
+h1,
+h2,
+h3 {
+>>>>>>> 6fbf6f3be79b7b0259d5d92425890e232a86c059
     color: #2c3e50;
     margin-bottom: 1rem;
 }
@@ -145,8 +155,16 @@ video {
         flex-direction: column;
         align-items: flex-start;
     }
+<<<<<<< HEAD
     nav .nav-links {
         margin-top: 0.5rem;
     }
 }
 
+=======
+
+    nav .nav-links {
+        margin-top: 0.5rem;
+    }
+}
+>>>>>>> 6fbf6f3be79b7b0259d5d92425890e232a86c059

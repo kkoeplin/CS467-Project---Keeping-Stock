@@ -6,7 +6,13 @@
 <h1>Smart Inventory Management</h1>
 
 <div id="mainButtons">
+<<<<<<< HEAD
     <button class="take-image-btn" id="showCameraBtn">Create Item</button>
+=======
+    <button class="take-image-btn" id="showCameraBtn" onclick="window.location.href='/items/create'">
+        Create Item
+    </button>
+>>>>>>> 6fbf6f3be79b7b0259d5d92425890e232a86c059
     <button class="take-image-btn" id="boxBtn">Create Box</button>
     <button class="take-image-btn" id="searchBtn">Search Items/Boxes</button>
     <button class="take-image-btn" id="scanQrBtn">Scan QR Code</button>
@@ -62,7 +68,11 @@
                         canvas.width = video.videoWidth;
                         canvas.height = video.videoHeight;
                         canvas.getContext('2d').drawImage(video, 0, 0);
+<<<<<<< HEAD
                         
+=======
+
+>>>>>>> 6fbf6f3be79b7b0259d5d92425890e232a86c059
                         const img = document.createElement('img');
                         img.src = canvas.toDataURL('image/png');
                         gallery.appendChild(img);
@@ -99,11 +109,14 @@
         cameraControls.innerHTML = '';
     }
 
+<<<<<<< HEAD
     // Create Item button
     showCameraBtn.addEventListener('click', () => {
         if (!cameraStarted) startCamera('create');
     });
 
+=======
+>>>>>>> 6fbf6f3be79b7b0259d5d92425890e232a86c059
     // Scan QR Code button
     scanQrBtn.addEventListener('click', () => {
         if (!cameraStarted) {
@@ -111,4 +124,8 @@
         }
     });
 </script>
+<<<<<<< HEAD
 {% endblock %}
+=======
+{% endblock %}
+>>>>>>> 6fbf6f3be79b7b0259d5d92425890e232a86c059
