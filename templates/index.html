@@ -6,13 +6,7 @@
 <h1>Smart Inventory Management</h1>
 
 <div id="mainButtons">
-<<<<<<< HEAD
     <button class="take-image-btn" id="showCameraBtn">Create Item</button>
-=======
-    <button class="take-image-btn" id="showCameraBtn" onclick="window.location.href='/items/create'">
-        Create Item
-    </button>
->>>>>>> 6fbf6f3be79b7b0259d5d92425890e232a86c059
     <button class="take-image-btn" id="boxBtn">Create Box</button>
     <button class="take-image-btn" id="searchBtn">Search Items/Boxes</button>
     <button class="take-image-btn" id="scanQrBtn">Scan QR Code</button>
@@ -25,107 +19,20 @@
     <div id="cameraControls" style="margin-top:10px;"></div>
 </div>
 
-<!-- Snapshot gallery -->
+<!-- Snapshot gallery for Testing-->
 <div id="snapshotGallery"></div>
 
+<!-- Include jsQR library for qr code scanning-->
+<script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+<script src="{{ url_for('static', filename='qrcodescan.js') }}"></script>
+
+<!-- Jump to create item page -->
 <script>
     const showCameraBtn = document.getElementById('showCameraBtn');
-    const scanQrBtn = document.getElementById('scanQrBtn');
-    const cameraControls = document.getElementById('cameraControls');
-    const video = document.getElementById('cameraFeed');
-    const cameraContainer = document.getElementById('cameraContainer');
-    const gallery = document.getElementById('snapshotGallery');
-    const mainButtons = document.querySelectorAll('#mainButtons button');
-
-    let cameraStarted = false;
-    let currentMode = null;
-    let mediaStream = null;
-
-    function startCamera(mode) {
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => {
-                mediaStream = stream;
-                video.srcObject = stream;
-                cameraContainer.style.display = 'block';
-                cameraStarted = true;
-                currentMode = mode;
-
-                // Disable all main buttons while camera is active
-                mainButtons.forEach(btn => btn.disabled = true);
-                mainButtons.forEach(btn => btn.style.opacity = 0.5);
-
-                // Clear previous controls
-                cameraControls.innerHTML = '';
-
-                // Only add Capture button if in 'create' mode
-                if (mode === 'create') {
-                    const captureBtn = document.createElement('button');
-                    captureBtn.textContent = 'Capture Image';
-                    captureBtn.className = 'take-image-btn';
-                    captureBtn.style.marginRight = '10px';
-                    captureBtn.addEventListener('click', () => {
-                        const canvas = document.createElement('canvas');
-                        canvas.width = video.videoWidth;
-                        canvas.height = video.videoHeight;
-                        canvas.getContext('2d').drawImage(video, 0, 0);
-<<<<<<< HEAD
-                        
-=======
-
->>>>>>> 6fbf6f3be79b7b0259d5d92425890e232a86c059
-                        const img = document.createElement('img');
-                        img.src = canvas.toDataURL('image/png');
-                        gallery.appendChild(img);
-                    });
-                    cameraControls.appendChild(captureBtn);
-                }
-
-                // Always add Exit button
-                const exitCameraBtn = document.createElement('button');
-                exitCameraBtn.textContent = 'Exit Camera';
-                exitCameraBtn.className = 'take-image-btn';
-                exitCameraBtn.style.backgroundColor = 'red';
-                exitCameraBtn.style.color = 'white';
-                exitCameraBtn.addEventListener('click', stopCamera);
-                cameraControls.appendChild(exitCameraBtn);
-            })
-            .catch(err => {
-                alert('Error accessing camera. Please allow camera permission.\n\n' + err.message);
-            });
-    }
-
-    function stopCamera() {
-        if (mediaStream) {
-            mediaStream.getTracks().forEach(track => track.stop());
-        }
-        video.srcObject = null;
-        cameraContainer.style.display = 'none';
-        cameraStarted = false;
-        currentMode = null;
-
-        // Re-enable main buttons
-        mainButtons.forEach(btn => btn.disabled = false);
-        mainButtons.forEach(btn => btn.style.opacity = 1);
-        cameraControls.innerHTML = '';
-    }
-
-<<<<<<< HEAD
-    // Create Item button
     showCameraBtn.addEventListener('click', () => {
-        if (!cameraStarted) startCamera('create');
-    });
-
-=======
->>>>>>> 6fbf6f3be79b7b0259d5d92425890e232a86c059
-    // Scan QR Code button
-    scanQrBtn.addEventListener('click', () => {
-        if (!cameraStarted) {
-            startCamera('scan');
-        }
+        window.location.href = '/items/create';;
     });
 </script>
-<<<<<<< HEAD
+    
+
 {% endblock %}
-=======
-{% endblock %}
->>>>>>> 6fbf6f3be79b7b0259d5d92425890e232a86c059
