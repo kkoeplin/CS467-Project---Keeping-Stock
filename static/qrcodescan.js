@@ -80,6 +80,7 @@ function scanQRCode() {
         const code = jsQR(imageData.data, canvas.width, canvas.height);
 
         if (code) {
+            window.location.href = `gallery/filter?search=&box=${encodeURIComponent(code.data)}`;
             alert('QR Code detected: ' + code.data);
             stopCamera();
         } else {
