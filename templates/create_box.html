@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Create Box{% endblock %}
+
+{% block content %}
+<h2>Create a New Box</h2>
+
+<!-- form creation for box-->
+<form id="boxForm">
+    <label for = "boxDescription"> Box Description:</label><br>
+    <input type = "text" id="boxDescription" name = "description" placeholder = "Enter box name" required>
+    <button type="submit" class="take-image-btn">Create Box</button>
+</form>
+
+<div id="boxResult"style="display:none; margin-top: 20px;">
+    <h3>Box Created</h3>
+    <p> Description: <span id="boxDesc"></span></p>
+</div>
+
+<script src="{{ url_for('static', filename='createBox.js') }}"></script>
+{% endblock %}
