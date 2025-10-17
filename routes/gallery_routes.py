@@ -32,11 +32,11 @@ def filtered_view():
 
     items = ALL_ITEMS
     if box:
-        items = [i for i in ALL_ITEMS if i[1] == box]
+        items = [i for i in items if i[1] == box]
     if tags:
-        items = [i for i in ALL_ITEMS if any(t in i[2] for t in tags)]
+        items = [i for i in items if any(t in i[2] for t in tags)]
     if search:
-        items = [i for i in ALL_ITEMS if search.lower() in i[0].lower()]
+        items = [i for i in items if search.lower() in i[0].lower()]
 
     return render_template(
         "gallery_items.html",
