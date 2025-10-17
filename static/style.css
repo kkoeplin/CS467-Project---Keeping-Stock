@@ -240,3 +240,12 @@ video {
 .item-card:focus, .item-card:visited { color: inherit; }
 .item-card-title { font-size: 1rem; } 
 .item-card-box { font-size: .8rem; }
+
+#item-not-found {
+    text-align: left;
+    margin-left: 1rem;
+    font-size: 1rem;
+}
+#item-not-found span {
+    font-size: 1.75rem;
+}
