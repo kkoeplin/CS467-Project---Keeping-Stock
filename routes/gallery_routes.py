@@ -1,43 +1,62 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, current_app
 
 gallery_bp = Blueprint("gallery", __name__)
 
-ALL_ITEMS = [
-    ('Backpack', 'Cabinet', ['black', 'bag']),
-    ('Apple', 'Kitchen', ['red', 'food']),
-    ('Banana', 'Kitchen', ['yellow', 'food']),
-    ('Gloves', 'Cabinet', ['clothing']),
-    ('Handbag', 'Cabinet', ['red', 'bag', 'leather']),
-    ('Watch', 'Cabinet', ['accessory', 'leather']),
-    ('Glasses', 'Cabinet', ['accessory']),
-]
-ALL_BOXES = sorted({i[1] for i in ALL_ITEMS})
-ALL_TAGS = sorted({t for i in ALL_ITEMS for t in i[2]})
-
 @gallery_bp.route("/")
 def view():
+    db = current_app.config["DB"]
+    items_collection = db["test-items"]
+    boxes_collection = db["test-boxes"]
+
+    all_items = list(
+        items_collection
+        .find({}, {"_id": 0, "title": 1, "tags": 1, "box_id": 1, "image": 1})  # specify 1 to include or 0 to exclude fields
+        .sort({"title": 1})  # specify 1 for ascending or -1 for descending
+    )
+    all_boxes = list(boxes_collection.find({}, {"_id": 1, "description": 1}).sort({"description": 1}))
+    all_boxes = {b["_id"]: b["description"] for b in all_boxes}
+    all_tags = set()  # manually collate tags instead of reading from DB again
+    for i in all_items:
+        i["box_description"] = all_boxes.get(i.pop("box_id"), "Box not found")  # safe check
+        all_tags.update(i["tags"])
+
     return render_template(
         "gallery.html", 
-        items=ALL_ITEMS,
-        all_boxes=ALL_BOXES, 
-        all_tags=ALL_TAGS
+        items=all_items,
+        all_boxes=list(all_boxes.values()), 
+        all_tags=sorted(all_tags)
     )
 
 @gallery_bp.route("/filter")
 def filtered_view():
     args = request.args
-    box = args.get('box')
-    tags = args.getlist('tags')
-    search = args.get('search').strip()
+    box_description = args.get("box-description")
+    tags = args.getlist("tags")
+    search = args.get("search").strip()
 
-    items = ALL_ITEMS
-    if box:
-        items = [i for i in ALL_ITEMS if i[1] == box]
+    db = current_app.config["DB"]
+    boxes_collection = db["test-boxes"]
+    items_collection = db["test-items"]
+
+    query_filter = {}
+    all_boxes = list(boxes_collection.find({}, {"_id": 1, "description": 1}))
+    if box_description:
+        box_id = next(b["_id"] for b in all_boxes if b["description"] == box_description)
+        query_filter["box_id"] = box_id
     if tags:
-        items = [i for i in ALL_ITEMS if any(t in i[2] for t in tags)]
+        query_filter["tags"] = {"$in": tags}
     if search:
-        items = [i for i in ALL_ITEMS if search.lower() in i[0].lower()]
+        query_filter["title"] = {"$regex": search, "$options": "i"}
 
+    items = list(
+        items_collection
+        .find(query_filter, {"_id": 0, "title": 1, "tags": 1, "box_id": 1, "image": 1})
+        .sort({"title": 1})
+    )
+    all_boxes = {b["_id"]: b["description"] for b in all_boxes}
+    for i in items:
+        i["box_description"] = all_boxes.get(i.pop("box_id"), "Box not found")
+    
     return render_template(
         "gallery_items.html",
         items=items
