@@ -12,6 +12,7 @@ let aiResult = null;
 // start camera 
 navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
     video.srcObject = stream;
+    console.log("Camera starts successfully")
 });
 
 // capture snapshot
@@ -23,9 +24,11 @@ captureBtn.onclick = async () => {
     imageData = canvas.toDataURL('image/png');
     imgTag.src = imageData;
     preview.style.display = 'block';
+    
+    console.log("Image capture. Sending to backend..")
 
     // call backend AI route
-    const res = await fetch('/create_item', {
+    const res = await fetch('/items/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ image: imageData })
@@ -41,8 +44,8 @@ captureBtn.onclick = async () => {
 
 // save item to DB
 saveBtn.onclick = async () => {
-    if (!aiResult || !aiResult.success) return alert('No AI data yet');
-    const res = await fetch('/save_item', {
+    if (!aiResult || !aiResult.success) return alert('Waiting for AI data...');
+    const res = await fetch('/items/create', {      
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

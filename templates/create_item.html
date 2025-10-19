@@ -48,7 +48,7 @@
                 body: JSON.stringify({ image: imageData })
             });
             const result = await res.json();
-
+            console.log("result =>", result)
             if (result.success) {
                 descSpan.textContent = result.description;
                 tagsSpan.textContent = result.tags.join(', ');
