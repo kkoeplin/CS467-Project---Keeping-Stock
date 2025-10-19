@@ -4,6 +4,7 @@
 
 {% block head %}
 <script src="{{ url_for('static', filename='htmx.min.js') }}"></script>
+<script src="{{ url_for('static', filename='deleteBox.js') }}"></script>
 {% endblock %}
 
 {% block content %}
@@ -15,16 +16,24 @@
             <tr>
                 <th>Box ID</th>
                 <th>Description</th>
+                <th>Actions</th>
             </tr>
         </thead>
-        <tbody id="box-items">
+
+        <tbody id="box-total">
             {% for box in boxes %}
-            <tr>
+            <tr class="box-entry">
                 <td>{{ box._id }}</td>
                 <td>{{ box.description }}</td>
+                <td>
+                    <button class="box-delete-btn" data-box-id="{{ box._id }}"> Delete
+                    </button>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
+
     </table>
 </div>
+<div id="boxResult" style="display:none;"></div>
 {% endblock %}
