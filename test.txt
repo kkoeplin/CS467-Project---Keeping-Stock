@@ -1,0 +1,65 @@
+[
+  {
+    "_id": {"$oid": "test-item-1"},
+    "title": "Torch",
+    "description": "A rechargeable torch used for lighting dark corners and power outages.",
+    "tags": ["tool", "light", "gadget"],
+    "box_id": {"$oid": "68f2d440f934b2a36f82c64d"},
+    "flag": false,
+    "image": ""
+  },
+  {
+    "_id": {"$oid": "test-item-2"},
+    "title": "Measuring Tape",
+    "description": "A retractable 3-meter measuring tape used for quick household measurements.",
+    "tags": ["tool", "measurement", "DIY"],
+    "box_id": {"$oid": "68f2d440f934b2a36f82c64d"},
+    "flag": false,
+    "image": ""
+  },
+  {
+    "_id": {"$oid": "test-item-3"},
+    "title": "Screwdriver Set",
+    "description": "A compact case containing multiple screwdrivers for electronics and small repairs.",
+    "tags": ["tool", "repair", "gadget"],
+    "box_id": {"$oid": "68f2d440f934b2a36f82c64d"},
+    "flag": false,
+    "image": ""
+  },
+  {
+    "_id": {"$oid": "test-item-4"},
+    "title": "Pen",
+    "description": "A blue ink ballpoint pen used for writing.",
+    "tags": ["stationery", "writing", "office"],
+    "box_id": {"$oid": "68f2d529f934b2a36f82c650"},
+    "flag": false,
+    "image": ""
+  },
+  {
+    "_id": {"$oid": "test-item-5"},
+    "title": "Notebook",
+    "description": "A small lined notebook for jotting down notes and reminders.",
+    "tags": ["stationery", "paper", "notes"],
+    "box_id": {"$oid": "68f2d529f934b2a36f82c650"},
+    "flag": false,
+    "image": ""
+  },
+  {
+    "_id": {"$oid": "test-item-6"},
+    "title": "USB Cable",
+    "description": "A short USB-A to USB-C cable for charging and data transfer.",
+    "tags": ["electronics", "charging", "cable"],
+    "box_id": {"$oid": "68f2d529f934b2a36f82c650"},
+    "flag": false,
+    "image": ""
+  },
+  {
+    "_id": {"$oid": "test-item-7"},
+    "title": "Scissors",
+    "description": "A pair of sharp scissors used for cutting paper or packaging.",
+    "tags": ["tool", "cutting", "stationery"],
+    "box_id": {"$oid": "68f2d529f934b2a36f82c650"},
+    "flag": false,
+    "image": ""
+  }
+]
