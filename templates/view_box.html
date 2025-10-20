@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}View Boxes{% endblock %}
+
+{% block head %}
+<script src="{{ url_for('static', filename='htmx.min.js') }}"></script>
+<script src="{{ url_for('static', filename='deleteBox.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<h1>List of all Boxes</h1>
+
+<div id="boxes-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Box ID</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody id="box-total">
+            {% for box in boxes %}
+            <tr class="box-entry">
+                <td>{{ box._id }}</td>
+                <td>{{ box.description }}</td>
+                <td>
+                    <button class="box-delete-btn" data-box-id="{{ box._id }}"> Delete
+                    </button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+</div>
+<div id="boxResult" style="display:none;"></div>
+{% endblock %}

@@ -1,4 +1,3 @@
-
 let cameraStarted = false;
 let mediaStream = null;
 
@@ -16,8 +15,10 @@ function startCamera() {
             cameraStarted = true;
 
             // Disable main buttons while camera is active
-            mainButtons.forEach(btn => btn.disabled = true);
-            mainButtons.forEach(btn => btn.style.opacity = 0.5);
+            mainButtons.forEach(btn => {
+                btn.disabled = true;
+                btn.style.opacity = 0.5;
+            });
 
             // Clear previous mode buttons
             cameraControls.querySelectorAll('.mode-btn').forEach(btn => btn.remove());
@@ -45,8 +46,10 @@ function stopCamera() {
     cameraStarted = false;
 
     // Re-enable main buttons
-    mainButtons.forEach(btn => btn.disabled = false);
-    mainButtons.forEach(btn => btn.style.opacity = 1);
+    mainButtons.forEach(btn => {
+        btn.disabled = false;
+        btn.style.opacity = 1;
+    });
 
     // Remove mode buttons
     cameraControls.querySelectorAll('.mode-btn').forEach(btn => btn.remove());
@@ -69,8 +72,19 @@ function scanQRCode() {
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
 
+    // Tracking last detections to avoid false positives
+    let lastDetectedCode = null;
+    let detectionCount = 0;
+    const REQUIRED_CONFIRMATIONS = 10; // number of frames required to confirm a code
+
     function tick() {
         if (!cameraStarted) return;
+
+        // Only process if video has valid dimensions
+        if (video.videoWidth === 0 || video.videoHeight === 0) {
+            requestAnimationFrame(tick);
+            return;
+        }
 
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
@@ -80,11 +94,28 @@ function scanQRCode() {
         const code = jsQR(imageData.data, canvas.width, canvas.height);
 
         if (code) {
-            alert('QR Code detected: ' + code.data);
-            stopCamera();
+            const detectedValue = code.data.trim();
+
+            if (detectedValue === lastDetectedCode) {
+                detectionCount++;
+            } else {
+                lastDetectedCode = detectedValue;
+                detectionCount = 1;
+            }
+
+            if (detectionCount >= REQUIRED_CONFIRMATIONS) {
+                alert('QR Code detected: ' + detectedValue);
+                stopCamera();
+                window.location.href = `gallery/filter?search=&box=${encodeURIComponent(detectedValue)}`;
+                return;
+            }
         } else {
-            requestAnimationFrame(tick);
+            // Reset if no code in this frame
+            lastDetectedCode = null;
+            detectionCount = 0;
         }
+
+        requestAnimationFrame(tick);
     }
 
     tick();
@@ -93,7 +124,5 @@ function scanQRCode() {
 // Attach event listener
 document.addEventListener('DOMContentLoaded', () => {
     const scanQrBtn = document.getElementById('scanQrBtn');
-    scanQrBtn.addEventListener('click', () => {
-        startCamera();
-    });
+    scanQrBtn.addEventListener('click', startCamera);
 });

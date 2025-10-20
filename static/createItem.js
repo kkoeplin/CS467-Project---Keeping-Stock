@@ -15,6 +15,8 @@ document.addEventListener("DOMContentLoaded", ()=>{
     let imageData = null;
     let aiResult = null;
 
+    document.getElementById('spinner').style.display = 'block';
+
     // start camera 
     navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
         video.srcObject = stream;
@@ -41,6 +43,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
         if (aiResult.success) {
             descSpan.textContent = aiResult.description;
             tagsSpan.textContent = aiResult.tags.join(', ');
+            document.getElementById('spinner').style.display = 'none';
         } else {
             descSpan.textContent = 'Failed to generate.';
         }
