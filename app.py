@@ -21,6 +21,7 @@ app.register_blueprint(item_bp, url_prefix="/items")
 app.register_blueprint(gallery_bp, url_prefix="/gallery")
 app.register_blueprint(box_bp, url_prefix="/boxes")
 
+
 @app.route("/")
 def home():
     return render_template("index.html")
