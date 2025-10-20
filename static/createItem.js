@@ -1,65 +1,75 @@
-const video = document.getElementById('cameraFeed');
-const captureBtn = document.getElementById('captureBtn');
-const exitBtn = document.getElementById('exitBtn');
-const preview = document.getElementById('preview');
-const imgTag = document.getElementById('capturedImage');
-const descSpan = document.getElementById('desc');
-const tagsSpan = document.getElementById('tags');
-const saveBtn = document.getElementById('saveBtn');
-let imageData = null;
-let aiResult = null;
+// https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
+// https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Manipulating_video_using_canvas
+// https://daverupert.com/2022/11/html5-video-capture-frame-still
+// https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toDataURL
 
-// start camera 
-navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
-    video.srcObject = stream;
-    console.log("Camera starts successfully")
-});
+document.addEventListener("DOMContentLoaded", ()=>{
+    const video = document.getElementById('cameraFeed');
+    const captureBtn = document.getElementById('captureBtn');
+    const exitBtn = document.getElementById('exitBtn');
+    const preview = document.getElementById('preview');
+    const capturedImg = document.getElementById('capturedImage');
+    const descSpan = document.getElementById('desc');
+    const tagsSpan = document.getElementById('tags');
+    const saveBtn = document.getElementById('saveBtn');
+    let imageData = null;
+    let aiResult = null;
 
-// capture snapshot
-captureBtn.onclick = async () => {
-    const canvas = document.createElement('canvas');
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    canvas.getContext('2d').drawImage(video, 0, 0);
-    imageData = canvas.toDataURL('image/png');
-    imgTag.src = imageData;
-    preview.style.display = 'block';
-    
-    console.log("Image capture. Sending to backend..")
-
-    // call backend AI route
-    const res = await fetch('/items/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image: imageData })
+    // start camera 
+    navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+        video.srcObject = stream;
+        console.log("Camera starts successfully")
     });
-    aiResult = await res.json();
-    if (aiResult.success) {
-        descSpan.textContent = aiResult.description;
-        tagsSpan.textContent = aiResult.tags.join(', ');
-    } else {
-        descSpan.textContent = 'Failed to generate.';
-    }
-};
 
-// save item to DB
-saveBtn.onclick = async () => {
-    if (!aiResult || !aiResult.success) return alert('Waiting for AI data...');
-    const res = await fetch('/items/create', {      
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            image: imageData,
-            description: aiResult.description,
-            tags: aiResult.tags
-        })
-    });
-    const data = await res.json();
-    if (data.success) alert('Item saved successfully!');
-};
+    // capture snapshot
+    captureBtn.onclick = async () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
+        imageData = canvas.toDataURL('image/png'); // convert to base 64 encoded image string
+        capturedImg.src = imageData;
+        preview.style.display = 'block';
+        
+        // call backend AI route
+        const res = await fetch('/items/create', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image: imageData })
+        });
+        aiResult = await res.json();
+        if (aiResult.success) {
+            descSpan.textContent = aiResult.description;
+            tagsSpan.textContent = aiResult.tags.join(', ');
+        } else {
+            descSpan.textContent = 'Failed to generate.';
+        }
+    };
 
-// exit camera
-exitBtn.onclick = () => {
-    video.srcObject.getTracks().forEach(t => t.stop());
-    window.location.href = '/';
-};
+    // save item to DB
+    saveBtn.onclick = async () => {
+        if (!aiResult || !aiResult.success) return alert('Waiting for AI data...');
+        const res = await fetch('/items/create', {      
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                image: imageData,
+                description: aiResult.description,
+                tags: aiResult.tags
+            })
+        });
+        const data = await res.json();
+        if (data.success) alert('Item saved successfully!');
+    };
+
+    // exit camera
+    exitBtn.onclick = () => {
+        video.srcObject.getTracks().forEach(t => t.stop());
+        window.location.href = '/';
+    };
+})
+
+
+
+
+

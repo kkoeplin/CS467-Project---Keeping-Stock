@@ -20,7 +20,6 @@ def create_item_page():
 @item_bp.route("/create", methods=["POST"])
 def create_item():
     ai_client = current_app.config["AI_CLIENT"]
-
     try:
         data = request.get_json()
         if not data or "image" not in data:
@@ -38,7 +37,7 @@ def create_item():
                     "content": [
                         {
                             "type": "text",
-                            "text": "Describe the main object this image and list possible tags as JSON with 'description' and 'tags' keys.",
+                            "text": "Describe only the main item in this image as if adding it to an inventory list. Exclude people, background, or context. Return JSON with: 'description': concise item name (no adjectives beyond basic identifiers).'tags': list of relevant relevant keywords.",
                         },
                         {"type": "image_url", "image_url": {"url": image_data}},
                     ],
