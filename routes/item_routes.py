@@ -1,5 +1,4 @@
-from flask import Blueprint, request, jsonify, render_template
-from openai import OpenAI
+from flask import Blueprint, request, jsonify, render_template, current_app
 import base64, json, os, certifi
 from pymongo import MongoClient
 
@@ -10,7 +9,6 @@ client = MongoClient(mongo_uri, tlsCAFile=certifi.where())
 db = client["keeping_stock"]
 items_collection = db["items"]
 
-ai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 item_bp = Blueprint("item", __name__)
 
 
@@ -21,6 +19,8 @@ def create_item_page():
 
 @item_bp.route("/create", methods=["POST"])
 def create_item():
+    ai_client = current_app.config["AI_CLIENT"]
+
     try:
         data = request.get_json()
         if not data or "image" not in data:
@@ -36,8 +36,11 @@ def create_item():
                 {
                     "role": "user",
                     "content": [
-                        {"type": "text", "text": "Describe the main object this image and list possible tags as JSON with 'description' and 'tags' keys."},
-                        {"type": "image_url", "image_url": {"url": image_data}}
+                        {
+                            "type": "text",
+                            "text": "Describe the main object this image and list possible tags as JSON with 'description' and 'tags' keys.",
+                        },
+                        {"type": "image_url", "image_url": {"url": image_data}},
                     ],
                 }
             ],
@@ -49,20 +52,15 @@ def create_item():
 
         description = result_json.get("description", "")
         tags = result_json.get("tags", [])
+        print(result_text)
+        items_collection.insert_one(
+            {"description": description, "tags": tags, "image": image_data}
+        )
 
-        items_collection.insert_one({
-            "description": description,
-            "tags": tags,
-            "image": image_data
-        })
-
-        return jsonify({
-            "success": True,
-            "description": description,
-            "tags": tags
-        })
+        return jsonify({"success": True, "description": description, "tags": tags})
 
     except Exception as e:
         import traceback
+
         traceback.print_exc()
         return jsonify({"success": False, "error": str(e)}), 500
