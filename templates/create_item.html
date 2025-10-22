@@ -1,3 +1,5 @@
+<!--https://developer.mozilla.org/en-US/docs/Web/CSS/@keyframes
+https://www.w3schools.com/howto/howto_css_loader.asp-->
 {% extends "base.html" %}
 {% block title %}Create Item{% endblock %}
 
@@ -5,65 +7,36 @@
 <h2>Create New Item</h2>
 
 <!-- Camera Feed -->
-<video id="cameraFeed" autoplay playsinline></video>
+<video id="cameraFeed" autoplay playsinline width="320" height="240"></video>
 <button id="captureBtn" class="take-image-btn">Capture</button>
 
 <!-- Preview -->
 <div id="preview" hidden>
     <img id="capturedImage" alt="Captured item preview">
+    <div id="spinner" style="display:none; text-align:center; margin-top:10px;">
+        <div class="loader"></div>
+        <p>Analyzing...</p>
+    </div>
     <p><strong>Description:</strong> <span id="desc"></span></p>
     <p><strong>Tags:</strong> <span id="tags"></span></p>
     <button id="backBtn" class="take-image-btn grey">Back</button>
 </div>
 
-<script>
-    const video = document.getElementById('cameraFeed');
-    const captureBtn = document.getElementById('captureBtn');
-    const preview = document.getElementById('preview');
-    const imgTag = document.getElementById('capturedImage');
-    const descSpan = document.getElementById('desc');
-    const tagsSpan = document.getElementById('tags');
-    const backBtn = document.getElementById('backBtn');
-    let mediaStream;
+<script src="{{ url_for('static', filename='createItem.js') }}"></script>
+<style>
+  .loader {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #555;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+  }
 
-    // start camera
-    navigator.mediaDevices.getUserMedia({ video: true })
-        .then(stream => { mediaStream = stream; video.srcObject = stream; })
-        .catch(() => alert('Camera access denied.'));
-
-    captureBtn.onclick = async () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        canvas.getContext('2d').drawImage(video, 0, 0);
-        const imageData = canvas.toDataURL('image/png');
-
-        imgTag.src = imageData;
-        preview.hidden = false;
-
-        try {
-            const res = await fetch('/items/create', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ image: imageData })
-            });
-            const result = await res.json();
-
-            if (result.success) {
-                descSpan.textContent = result.description;
-                tagsSpan.textContent = result.tags.join(', ');
-            } else {
-                descSpan.textContent = 'Error generating description.';
-                tagsSpan.textContent = '';
-            }
-        } catch {
-            descSpan.textContent = 'Request failed.';
-        }
-    };
-
-    backBtn.onclick = () => {
-        mediaStream?.getTracks().forEach(t => t.stop());
-        window.location.href = '/';
-    };
-</script>
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+</style>
 {% endblock %}
