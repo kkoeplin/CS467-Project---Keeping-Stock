@@ -5,6 +5,7 @@
 {% block head %}
 <script src="{{ url_for('static', filename='htmx.min.js') }}"></script>
 <script src="{{ url_for('static', filename='deleteBox.js') }}"></script>
+<script src="{{ url_for('static', filename='updateBox.js') }}"></script>
 {% endblock %}
 
 {% block content %}
@@ -16,18 +17,26 @@
             <tr>
                 <th>Box ID</th>
                 <th>Description</th>
-                <th>Actions</th>
             </tr>
         </thead>
 
         <tbody id="box-total">
             {% for box in boxes %}
-            <tr class="box-entry">
+            <tr class="box-entry" data-box-id="{{ box._id }}">
                 <td>{{ box._id }}</td>
-                <td>{{ box.description }}</td>
+                <td class="box-description">{{ box.description }}"</td> 
                 <td>
-                    <button class="box-delete-btn" data-box-id="{{ box._id }}"> Delete
-                    </button>
+                    <button class="box-update-btn" data-box-id="{{ box._id }}">Update</button>
+                    <button class="box-delete-btn" data-box-id="{{ box._id }}"> Delete</button>
+                </td>
+
+            <tr class="box-update-form-row" style="display:none;">
+                <td colspan="4">
+                    <form class="box-update-form">
+                        <input type="text" class="box-description-input" placeholder="Enter new description" value="{{ box.description }}" required>
+                        <button type="button" class="box-update-submit-btn" data-box-id="{{ box._id }}">Save</button>
+                        <button type="button" class="box-update-cancel">Cancel</button>
+                    </form>
                 </td>
             </tr>
             {% endfor %}
