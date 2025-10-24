@@ -1,3 +1,5 @@
+# Source: https://www.mongodb.com/docs/languages/python/pymongo-driver/current/crud/?msockid=084503792a466819114b15672bc06984
+
 from flask import Blueprint, render_template, request, current_app, jsonify
 from bson import ObjectId
 
@@ -71,3 +73,30 @@ def delete_box(box_id):
         return jsonify({"status": False, "error": "Box not found"})
 
 # Update Box
+@box_bp.route("/update/<box_id>", methods=["POST"])
+def update_box(box_id):
+    print("Updating box:", box_id)
+    db = current_app.config["DB"]
+    box_db = db["boxes"]
+
+    if not box_id:
+        return jsonify({"status": False, "error": "Need Box ID"})
+     
+    # Get the data
+    data = request.get_json()
+    new_desc = data.get("description") if data else None
+
+    # Check empty or space only inputs 
+    if not new_desc or not new_desc.strip():
+        return jsonify({"status": False, "error": "Descrip can't be empty or spaces only"})
+    
+    update_result = box_db.update_one(
+        {"_id": ObjectId(box_id)}, 
+        {"$set": {"description": new_desc.strip()}}
+    )
+
+    # Check if the box was modified
+    if update_result.modified_count == 1:
+        return jsonify({"status": True, "message": "Box was updated"})
+    else:
+        return jsonify({"status": False, "error": "Box not found"})

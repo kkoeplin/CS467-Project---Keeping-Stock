@@ -2,17 +2,17 @@
 {% block title %}Create Box{% endblock %}
 
 {% block content %}
-<h2>Create a New Box</h2>
+<h2> 📦 Create a New Box or Storage Space 📦</h2>
 
 <!-- form creation for box-->
 <form id="boxForm">
-    <label for = "boxDescription"> Box Description:</label><br>
+    <label for = "boxDescription"> Please enter a box or storage space description:</label><br>
     <input type = "text" id="boxDescription" name = "description" placeholder = "Enter box name" required>
-    <button type="submit" class="take-image-btn">Create Box</button>
+    <button type="submit" class="box-update-btn">Create Box</button>
 </form>
 
-<div id="boxResult"style="display:none; margin-top: 20px;">
-    <h3>Box Created</h3>
+<div id="boxResult"style="display:none;" class="box-created-section">
+    <h3>Box Created ✅ </h3>
     <p> Description: <span id="boxDesc"></span></p>
 </div>
 
