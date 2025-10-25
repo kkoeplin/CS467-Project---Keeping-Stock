@@ -151,3 +151,57 @@ video {
         margin-top: 0.5rem;
     }
 }
+
+/*This code was generated with the help of Copilot.  This transcript https://copilot.microsoft.com/chats/gmGTE8Gcu2RccW55uYrTFdocuments the GenAI interaction that led to my code"*/ 
+
+.box-description-input {
+  width: 100%;
+  padding: 0.6rem 1.25rem;
+  font-size: 2rem;
+  border: 1px solid #ccc;
+  border-radius: 50px;
+  background-color: white;
+  box-sizing: border-box;
+  margin-bottom: 1.25rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Box result container */
+#boxResult {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  box-shadow: 0 0 10px #0000000d;
+  text-align: center;
+  font-size: 1rem;
+  max-width: 600px;
+}
+
+/* Success + error messages */
+.success-message {
+  color: #27ae60;
+  font-weight: bold;
+  margin-top: 1rem;
+}
+
+.error-message {
+  color: #e74c3c;
+  font-weight: bold;
+  margin-top: 1rem;
+}
+
+/*This code was generated with the help of Copilot.  This transcript https://copilot.microsoft.com/chats/gmGTE8Gcu2RccW55uYrTF the GenAI interaction that led to my code"*/ 
+.box-created-section {
+  margin-top: 1.5rem;
+  padding: 1rem 1.5rem;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  box-shadow: 0 0 10px #0000000d;
+  font-size: 1rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
