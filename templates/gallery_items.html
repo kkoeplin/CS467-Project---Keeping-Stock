@@ -33,7 +33,7 @@
   function openItemModal(elem) {
     const modal = document.getElementById("item-modal");
     const item = JSON.parse(elem.dataset.item)
-    const deleteUrl = "/gallery/items/${encodeURIComponent(item._id)}";
+    const deleteUrl = `/gallery/items/${encodeURIComponent(item._id)}`;
 
     // mirror item card layout, adding item description and buttons
     modal.innerHTML = `<div>
