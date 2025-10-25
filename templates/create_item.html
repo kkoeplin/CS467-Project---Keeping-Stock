@@ -27,6 +27,11 @@ https://www.w3schools.com/howto/howto_css_loader.asp-->
   <p class="label">Tags (comma separated):</p>
   <input id="tags" type="text">
 
+  <p class="label">Select Box:</p>
+  <select id="boxSelect">
+    <option value="">-- Select a Box --</option>
+  </select>
+
   <button id="saveBtn" class="take-image-btn green">Save</button>
   <button id="backBtn" class="take-image-btn grey">Retake</button>
 </div>
@@ -92,6 +97,18 @@ https://www.w3schools.com/howto/howto_css_loader.asp-->
   width: 90%;
   text-align: left;
   margin-bottom: 2px;
+}
+#boxSelect {
+  width: 90%;
+  box-sizing: border-box;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 15px;
+  display: block; 
 }
 </style>
 {% endblock %}

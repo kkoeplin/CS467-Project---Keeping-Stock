@@ -13,9 +13,32 @@ document.addEventListener("DOMContentLoaded", ()=>{
     const descField = document.getElementById('desc');
     const tagsField = document.getElementById('tags');
     const spinner = document.getElementById('spinner');
+    const boxSelect = document.getElementById('boxSelect');
+    const removedFlag = document.getElementById('removedFlag');
     let imageData = null;
     let aiResult = null;
     let stream = null;
+
+    // list of boxes for dropdown
+    async function loadBoxes() {
+        try {
+            const res = await fetch('/boxes/api/view');
+            const data = await res.json();
+            console.log("data =>", data)
+
+            if (data.success && Array.isArray(data.boxes)) {
+                data.boxes.forEach(box => {
+                    const opt = document.createElement('option');
+                    opt.value = box._id;                     
+                    opt.textContent = box.description || ''; 
+                    boxSelect.appendChild(opt);
+                }); 
+            }
+        } catch (err) {
+            console.error("Error loading boxes:", err);
+        }
+    }
+    loadBoxes();
 
     // Start camera
     async function startCamera() {
@@ -85,7 +108,13 @@ document.addEventListener("DOMContentLoaded", ()=>{
         const res = await fetch('/items/save', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ image: imageData, description, tags })
+            body: JSON.stringify({
+            image: imageData,
+            description,
+            tags,
+            box_id: boxSelect.value,
+            removed: removedFlag.value
+            })
         });
 
         const data = await res.json();

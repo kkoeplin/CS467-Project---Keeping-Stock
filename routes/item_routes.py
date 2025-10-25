@@ -62,22 +62,13 @@ def create_item():
 
 @item_bp.route("/save", methods=["POST"])
 def save_item():
-    try:
-        data = request.get_json()
-        if not data or "image" not in data:
-            return jsonify({"success": False, "error": "Invalid request"}), 400
-
-        description = data.get("description", "")
-        tags = data.get("tags", [])
-        image_data = data["image"]
-
-        items_collection.insert_one(
-            {"description": description, "tags": tags, "image": image_data}
-        )
-
-        return jsonify({"success": True})
-
-    except Exception as e:
-        import traceback
-        traceback.print_exc()
-        return jsonify({"success": False, "error": str(e)}), 500
+    data = request.get_json()
+    item = {
+        "image": data.get("image"),
+        "description": data.get("description"),
+        "tags": data.get("tags", []),
+        "box_id": data.get("box_id"),
+        "removed":"No" # always no when first creating the item
+    }
+    items_collection.insert_one(item)
+    return jsonify({"success": True})
