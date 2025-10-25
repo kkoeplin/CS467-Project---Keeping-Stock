@@ -25,7 +25,9 @@ def view():
         "gallery.html", 
         items=all_items,
         all_boxes=list(all_boxes.values()), 
-        all_tags=sorted(all_tags)
+        all_tags=sorted(all_tags),
+        default_search="",
+        default_box="",
     )
 
 @gallery_bp.route("/filter")
@@ -39,6 +41,7 @@ def filtered_view():
     boxes_collection = db["test-boxes"]
     items_collection = db["test-items"]
 
+    # specify filters if used
     query_filter = {}
     all_boxes = list(boxes_collection.find({}, {"_id": 1, "description": 1}))
     if box:
@@ -49,6 +52,7 @@ def filtered_view():
     if search:
         query_filter["title"] = {"$regex": search.strip(), "$options": "i"}
 
+    # retrieve items based on filters
     items = list(
         items_collection
         .find(query_filter, {"_id": 0, "title": 1, "tags": 1, "box_id": 1, "image": 1})
@@ -58,7 +62,21 @@ def filtered_view():
     for i in items:
         i["box"] = all_boxes.get(i.pop("box_id"), "Box not found")
     
-    return render_template(
-        "gallery_items.html",
-        items=items
-    )
+    is_htmx = request.headers.get("HX-Request") == "true"
+    if is_htmx:
+        # partial reload (default viewing)
+        return render_template(
+            "gallery_items.html",
+            items=items
+        )
+    else:
+        # full reload (mainly when accessing from qr code)
+        all_tags = items_collection.distinct("tags")
+        return render_template(
+            "gallery.html",
+            items=items,
+            all_boxes=sorted(all_boxes.values()),
+            all_tags=all_tags,
+            default_search=search,
+            default_box=box,
+        )

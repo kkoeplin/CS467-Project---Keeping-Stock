@@ -32,13 +32,13 @@
     >
 
         <!-- search bar for items -->
-        <input id="search-bar" type="search" name="search" placeholder="Search"/>
+        <input id="search-bar" type="search" name="search" placeholder="Search" value="{{ default_search }}"/>
 
         <!-- dropdown to select boxes -->
         <select id="select-dropdown" name="box">
-            <option value="">All Boxes</option>
+            <option value="" {% if default_box == '' %}selected{% endif %}>All Boxes</option>
             {% for b in all_boxes %}
-                <option value="{{ b }}">{{ b }}</option>
+                <option value="{{ b }}" {% if default_box == b %}selected{% endif %}>{{ b }}</option>
             {% endfor %}
         </select>
 
