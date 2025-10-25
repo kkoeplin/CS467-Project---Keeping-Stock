@@ -236,7 +236,7 @@ video {
     font-size: .7rem;
 }
 .item-card:hover { box-shadow: 0px 2px 10px #0000000d; }
-.item-card:focus, .item-card:visited { color: inherit; }
+.item-card:link, .item-card:visited { color: inherit; }
 .item-card-title { font-size: 1rem; } 
 .item-card-box { font-size: .8rem; }
 

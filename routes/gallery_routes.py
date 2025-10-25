@@ -8,6 +8,7 @@ def view():
     items_collection = db["test-items"]
     boxes_collection = db["test-boxes"]
 
+    # retrieve all items, boxes, and item tags
     all_items = list(
         items_collection
         .find({}, {"_id": 0, "title": 1, "tags": 1, "box_id": 1, "image": 1})  # specify 1 to include or 0 to exclude fields
@@ -17,7 +18,7 @@ def view():
     all_boxes = {b["_id"]: b["description"] for b in all_boxes}
     all_tags = set()  # manually collate tags instead of reading from DB again
     for i in all_items:
-        i["box_description"] = all_boxes.get(i.pop("box_id"), "Box not found")  # safe check
+        i["box"] = all_boxes.get(i.pop("box_id"), "Box not found")  # safe check
         all_tags.update(i["tags"])
 
     return render_template(
@@ -30,9 +31,9 @@ def view():
 @gallery_bp.route("/filter")
 def filtered_view():
     args = request.args
-    box_description = args.get("box-description")
+    box = args.get("box")
     tags = args.getlist("tags")
-    search = args.get("search").strip()
+    search = args.get("search", "").strip()
 
     db = current_app.config["DB"]
     boxes_collection = db["test-boxes"]
@@ -40,13 +41,13 @@ def filtered_view():
 
     query_filter = {}
     all_boxes = list(boxes_collection.find({}, {"_id": 1, "description": 1}))
-    if box_description:
-        box_id = next(b["_id"] for b in all_boxes if b["description"] == box_description)
+    if box:
+        box_id = next(b["_id"] for b in all_boxes if b["description"] == box)
         query_filter["box_id"] = box_id
     if tags:
         query_filter["tags"] = {"$in": tags}
     if search:
-        query_filter["title"] = {"$regex": search, "$options": "i"}
+        query_filter["title"] = {"$regex": search.strip(), "$options": "i"}
 
     items = list(
         items_collection
@@ -55,7 +56,7 @@ def filtered_view():
     )
     all_boxes = {b["_id"]: b["description"] for b in all_boxes}
     for i in items:
-        i["box_description"] = all_boxes.get(i.pop("box_id"), "Box not found")
+        i["box"] = all_boxes.get(i.pop("box_id"), "Box not found")
     
     return render_template(
         "gallery_items.html",

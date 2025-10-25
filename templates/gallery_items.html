@@ -10,7 +10,7 @@
             <!-- title of the item, box it belongs to, and its item tags -->
             <div>
                 <p class="item-card-title">{{ i.title }}</p>
-                <p class="item-card-box">Box: {{ i.box_description }}</p>
+                <p class="item-card-box">Box: {{ i.box }}</p>
                 <div>
                     {% for t in i.tags %}
                         <span class="item-card-tag">{{ t }}</span>

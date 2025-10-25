@@ -21,7 +21,8 @@
     -->
     <form
         hx-get="{{ url_for('gallery.filtered_view') }}"
-        hx-target="#gallery-items"        
+        hx-target="#gallery-items"    
+        hx-push-url="true"    
         hx-trigger="
             keyup changed delay:300ms from:input,
             search from:input[type='search'],
@@ -34,7 +35,7 @@
         <input id="search-bar" type="search" name="search" placeholder="Search"/>
 
         <!-- dropdown to select boxes -->
-        <select id="select-dropdown" name="box-description">
+        <select id="select-dropdown" name="box">
             <option value="">All Boxes</option>
             {% for b in all_boxes %}
                 <option value="{{ b }}">{{ b }}</option>
