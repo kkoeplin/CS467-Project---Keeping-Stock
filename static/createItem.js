@@ -113,7 +113,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
             description,
             tags,
             box_id: boxSelect.value,
-            removed: removedFlag.value
+            removed: 'No'
             })
         });
 
