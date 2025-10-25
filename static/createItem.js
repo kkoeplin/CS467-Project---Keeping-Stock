@@ -77,36 +77,25 @@ document.addEventListener("DOMContentLoaded", ()=>{
         }
     };
 
-    // Save item to DB
-    document.body.addEventListener('click', async (e) => {
-        if (e.target.id === 'saveBtn') {
-            if (!imageData) return alert('No image captured yet.');
+    saveBtn.onclick = async () => {
+        if (!imageData) return alert('No image captured yet.');
+        const description = descField.value.trim();
+        const tags = tagsField.value.split(',').map(t => t.trim()).filter(t => t);
 
-            const description = descField.value.trim();
-            const tags = tagsField.value
-                .split(',')
-                .map(t => t.trim())
-                .filter(t => t.length > 0);
+        const res = await fetch('/items/save', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image: imageData, description, tags })
+        });
 
-            const res = await fetch('/items/create', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    image: imageData,
-                    description: description,
-                    tags: tags
-                })
-            });
-
-            const data = await res.json();
-            if (data.success) {
-                alert('Item saved successfully!');
-                window.location.href = '/items';
-            } else {
-                alert('Failed to save item. Please try again.');
-            }
+        const data = await res.json();
+        if (data.success) {
+            alert('Item saved successfully!');
+            window.location.href = '/items';
+        } else {
+            alert('Failed to save item. Please try again.');
         }
-    });
+    };
 
     // Retake button
     retakeBtn.onclick = async () => {
