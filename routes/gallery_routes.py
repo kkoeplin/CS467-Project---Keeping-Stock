@@ -32,6 +32,7 @@ def view():
         items=all_items,
         all_boxes=all_boxes, 
         all_tags=sorted(all_tags),
+        checked_tags=[],
         default_search="",
         default_box_id="",
     )
@@ -90,6 +91,7 @@ def filtered_view():
             items=items,
             all_boxes=boxes,
             all_tags=all_tags,
+            checked_tags=tags,
             default_search=search,
             default_box_id=box_id,
         )

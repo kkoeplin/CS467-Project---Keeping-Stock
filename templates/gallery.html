@@ -24,7 +24,7 @@
     <form
         hx-get="{{ url_for('gallery.filtered_view') }}"
         hx-target="#gallery-items"    
-        hx-push-url="true"    
+        hx-push-url="true"
         hx-trigger="
             keyup changed delay:300ms from:input,
             search from:input[type='search'],
@@ -47,7 +47,7 @@
         <!-- toggles for item tags -->
         <div id="tags">
             {% for t in all_tags %}
-                <label class="tag" data-checked="false">
+                <label class="tag {% if t in checked_tags %}is-checked{% endif %}">
                     <input
                         type="checkbox"
                         class="tag-checkbox"
