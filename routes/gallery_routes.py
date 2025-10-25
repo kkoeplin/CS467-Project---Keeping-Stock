@@ -1,3 +1,4 @@
+from bson import ObjectId
 from flask import Blueprint, render_template, request, current_app
 
 gallery_bp = Blueprint("gallery", __name__)
@@ -15,54 +16,56 @@ def view():
         .sort({"title": 1})  # specify 1 for ascending or -1 for descending
     )
     all_boxes = list(boxes_collection.find({}, {"_id": 1, "description": 1}).sort({"description": 1}))
-    all_boxes = {b["_id"]: b["description"] for b in all_boxes}
+    all_boxes = {str(b["_id"]): b["description"] for b in all_boxes}
     all_tags = set()  # manually collate tags instead of reading from DB again
     for i in all_items:
-        i["box"] = all_boxes.get(i.pop("box_id"), "Box not found")  # safe check
+        i["box"] = all_boxes.get(str(i.pop("box_id")), "Box not found")  # safe check
         all_tags.update(i["tags"])
 
     return render_template(
         "gallery.html", 
         items=all_items,
-        all_boxes=list(all_boxes.values()), 
+        all_boxes=all_boxes, 
         all_tags=sorted(all_tags),
         default_search="",
-        default_box="",
+        default_box_id="",
     )
 
 @gallery_bp.route("/filter")
 def filtered_view():
     args = request.args
-    box = args.get("box")
+    box_id = args.get("box")
     tags = args.getlist("tags")
     search = args.get("search", "").strip()
+    is_htmx = request.headers.get("HX-Request") == "true"
 
     db = current_app.config["DB"]
     boxes_collection = db["test-boxes"]
     items_collection = db["test-items"]
 
     # specify filters if used
-    query_filter = {}
-    all_boxes = list(boxes_collection.find({}, {"_id": 1, "description": 1}))
-    if box:
-        box_id = next(b["_id"] for b in all_boxes if b["description"] == box)
-        query_filter["box_id"] = box_id
+    items_query_filter = {}
+    if box_id:
+        items_query_filter["box_id"] = ObjectId(box_id)
     if tags:
-        query_filter["tags"] = {"$in": tags}
+        items_query_filter["tags"] = {"$in": tags}
     if search:
-        query_filter["title"] = {"$regex": search.strip(), "$options": "i"}
+        items_query_filter["title"] = {"$regex": search.strip(), "$options": "i"}
 
     # retrieve items based on filters
     items = list(
         items_collection
-        .find(query_filter, {"_id": 0, "title": 1, "tags": 1, "box_id": 1, "image": 1})
+        .find(items_query_filter, {"_id": 0, "title": 1, "tags": 1, "box_id": 1, "image": 1})
         .sort({"title": 1})
     )
-    all_boxes = {b["_id"]: b["description"] for b in all_boxes}
+
+    # retrieve boxes based on filters for partial reload
+    boxes_query_filter = {"_id": items_query_filter["box_id"]} if (box_id and is_htmx) else {}
+    boxes = list(boxes_collection.find(boxes_query_filter, {"_id": 1, "description": 1}).sort({"description": 1}))
+    boxes = {str(b["_id"]): b["description"] for b in boxes}
     for i in items:
-        i["box"] = all_boxes.get(i.pop("box_id"), "Box not found")
+        i["box"] = boxes.get(str(i.pop("box_id")), "Box not found")
     
-    is_htmx = request.headers.get("HX-Request") == "true"
     if is_htmx:
         # partial reload (default viewing)
         return render_template(
@@ -75,8 +78,8 @@ def filtered_view():
         return render_template(
             "gallery.html",
             items=items,
-            all_boxes=sorted(all_boxes.values()),
+            all_boxes=boxes,
             all_tags=all_tags,
             default_search=search,
-            default_box=box,
+            default_box_id=box_id,
         )

@@ -36,9 +36,9 @@
 
         <!-- dropdown to select boxes -->
         <select id="select-dropdown" name="box">
-            <option value="" {% if default_box == '' %}selected{% endif %}>All Boxes</option>
-            {% for b in all_boxes %}
-                <option value="{{ b }}" {% if default_box == b %}selected{% endif %}>{{ b }}</option>
+            <option value="" {% if default_box_id == '' %}selected{% endif %}>All Boxes</option>
+            {% for box_id, desc in all_boxes.items() %}
+                <option value="{{ box_id }}" {% if default_box_id == box_id %}selected{% endif %}>{{ desc }}</option>
             {% endfor %}
         </select>
 
