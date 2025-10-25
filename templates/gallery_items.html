@@ -1,15 +1,20 @@
+<dialog id="item-modal"></dialog>
+
 {% if items %}
     {% for i in items %}
-
         <!-- item card containing all the details (image, title, etc.) -->
-        <a href="#" class="item-card">
-
+        <div 
+            id="item-card-{{ i._id }}"
+            class="item-card"
+            onclick="openItemModal(this)"
+            data-item='{{ i | tojson }}'
+        >
             <!-- image of the item -->
             <img src="{{ i.image.strip('\"') }}">
             
             <!-- title of the item, box it belongs to, and its item tags -->
             <div>
-                <p class="item-card-title">{{ i.title }}</p>
+                <p>{{ i.title }}</p>
                 <p class="item-card-box">Box: {{ i.box }}</p>
                 <div>
                     {% for t in i.tags %}
@@ -17,9 +22,50 @@
                     {% endfor %}
                 </div>
             </div>
-        </a>
+        </div>
     {% endfor %}
 {% else %}
         <!-- display message if no items are retrieved -->
         <p id="item-not-found"><span>⚠️</span>No items found.</p>
 {% endif %}
+
+<script>
+  function openItemModal(elem) {
+    const modal = document.getElementById("item-modal");
+    const item = JSON.parse(elem.dataset.item)
+    const deleteUrl = "/gallery/items/${encodeURIComponent(item._id)}";
+
+    // mirror item card layout, adding item description and buttons
+    modal.innerHTML = `<div>
+        <img src="${ item.image.replace(/"/g, '') }">
+        <h3>${ item.title }</h3>
+        <p>${ item.description }</p>
+        <p class="item-card-box">Box: ${ item.box }</p>
+        <div>${ item.tags.map(t => `<span class="item-card-tag">${ t }</span>`).join(' ')}</div>
+        <ul>
+            <button 
+                type="button"
+                id="item-modal-delete-btn" 
+                hx-delete="${deleteUrl}"
+                hx-target="#item-card-${item._id}"
+                hx-swap="outerHTML"
+                hx-disabled-elt="this, #item-modal-close-btn"
+                hx-on::after-on-load="this.closest('dialog').close()"
+            >
+                Delete
+            </button>
+            <button 
+                type="button"
+                id="item-modal-close-btn" 
+                onclick="this.closest('dialog').close()"
+            >
+                Close
+            </button>
+        </ul>
+    </div>`;
+    modal.showModal();
+
+    // required to specify this if htmx is included in javascript
+    htmx.process(modal);
+  }
+</script>

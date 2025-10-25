@@ -191,7 +191,6 @@ video {
     padding: .6rem .8rem;
     font-size: .9rem;
     cursor: pointer;
-    user-select: none;
 }
 .tag.is-checked {
     background-color: black;
@@ -222,8 +221,9 @@ video {
     text-align: left;
     padding: .5rem .75rem;
     vertical-align: center;
+    cursor: pointer;
 }
-.item-card img { 
+.item-card img, #item-modal img { 
     width: 100%; 
     object-fit: cover; 
 }
@@ -235,9 +235,8 @@ video {
     margin-bottom: .1rem;
     font-size: .7rem;
 }
-.item-card:hover { box-shadow: 0px 2px 10px #0000000d; }
+.item-card:hover { box-shadow: 0px 0px 10px #0000002f; }
 .item-card:link, .item-card:visited { color: inherit; }
-.item-card-title { font-size: 1rem; } 
 .item-card-box { font-size: .8rem; }
 
 #item-not-found {
@@ -248,4 +247,34 @@ video {
 #item-not-found span {
     font-size: 1.75rem; 
     margin-right: .25rem;
+}
+
+#item-modal {
+  border: none;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  text-align: left;
+  width: 40%;
+  max-width: 400px;
+  box-shadow: 0px 0px 20px #0000005f;
+}
+#item-modal ul {
+    display: flex;
+    justify-content: space-between;
+    padding-left: 0;
+    margin: 2rem 0 0 0;
+}
+#item-modal::backdrop { background: #00000080; }
+#item-modal-delete-btn, #item-modal-close-btn {
+    border: 1px solid #ddd;
+    font-size: 1rem;
+    padding: .5rem .75rem;
+    cursor: pointer;
+    border-radius: 3px;
+}
+#item-modal-delete-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+
 }
