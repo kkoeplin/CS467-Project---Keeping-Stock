@@ -193,20 +193,19 @@ video {
     cursor: pointer;
     user-select: none;
 }
-.tag-x {
+.tag.is-checked {
+    background-color: black;
+    color: white;
+    border: black;
+}
+.tag.is-checked::after {
+    content: "✕";
     margin-left: .35rem;
-    font-size: .9rem;
-    line-height: 1;
 }
 .tag-checkbox {
     position: absolute;
     opacity: 0;
     pointer-events: none;
-}
-.tag[data-checked="true"] {
-    background-color: black;
-    color: white;
-    border: black;
 }
 
 #gallery-items {

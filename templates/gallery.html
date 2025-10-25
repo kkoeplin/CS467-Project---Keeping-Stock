@@ -4,20 +4,36 @@
 
 {% block head %}
 <script src="{{ url_for('static', filename='htmx.min.js') }}"></script>
-
+<script src="{{ url_for('static', filename='toggleItemTag.js') }}"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='gallery.css') }}">
 {% endblock %}
 
 {% block content %}
 <h1>Find My Stuff</h1>
 
 <div id="search-form">
+    <!--
+        The following actions (hx-trigger) will trigger the GET request (hx-get):
+        - typing in the search bar
+        - clicking on the cross in the search bar
+        - selecting a box from the dropdown
+        - clicking on an item tag 
+    -->
     <form
         hx-get="{{ url_for('gallery.filtered_view') }}"
-        hx-target="#gallery-items"
-        hx-trigger="keyup changed delay:300ms from:input, change from:select, change from:input[name='tags']"
+        hx-target="#gallery-items"        
+        hx-trigger="
+            keyup changed delay:300ms from:input,
+            search from:input[type='search'],
+            change from:select,
+            change from:input[name='tags']
+        "
     >
+
+        <!-- search bar for items -->
         <input id="search-bar" type="search" name="search" placeholder="Search"/>
 
+        <!-- dropdown to select boxes -->
         <select id="select-dropdown" name="box-description">
             <option value="">All Boxes</option>
             {% for b in all_boxes %}
@@ -25,6 +41,7 @@
             {% endfor %}
         </select>
 
+        <!-- toggles for item tags -->
         <div id="tags">
             {% for t in all_tags %}
                 <label class="tag" data-checked="false">
@@ -40,26 +57,9 @@
         </div>
     </form>
 
+    <!-- displaying items retrieved from MongoDB -->
     <div id="gallery-items">
         {% include "gallery_items.html" %}
     </div>
 </div>
-
-<script>
-    document.addEventListener("change", function (e) {
-        if (!e.target.matches(".tag-checkbox")) return;
-        const label = e.target.closest(".tag");
-        const checked = e.target.checked;
-        label.dataset.checked = checked ? "true" : "false";
-        let x = label.querySelector(".tag-x");
-        if (checked) {
-        x = document.createElement("span");
-        x.className = "tag-x";
-        x.textContent = "✕";
-        label.appendChild(x);
-        } else if (!checked) {
-        x.remove();
-        }
-    });
-</script>
 {% endblock %}

@@ -1,7 +1,13 @@
 {% if items %}
     {% for i in items %}
+
+        <!-- item card containing all the details (image, title, etc.) -->
         <a href="#" class="item-card">
+
+            <!-- image of the item -->
             <img src="{{ i.image.strip('\"') }}">
+            
+            <!-- title of the item, box it belongs to, and its item tags -->
             <div>
                 <p class="item-card-title">{{ i.title }}</p>
                 <p class="item-card-box">Box: {{ i.box_description }}</p>
@@ -14,5 +20,6 @@
         </a>
     {% endfor %}
 {% else %}
+        <!-- display message if no items are retrieved -->
         <p id="item-not-found"><span>⚠️</span>No items found.</p>
 {% endif %}
