@@ -7,23 +7,59 @@ https://www.w3schools.com/howto/howto_css_loader.asp-->
 <h2>Create New Item</h2>
 
 <!-- Camera Feed -->
-<video id="cameraFeed" autoplay playsinline width="320" height="240"></video>
-<button id="captureBtn" class="take-image-btn">Capture</button>
+<div id="cameraContainer">
+  <video id="cameraFeed" autoplay playsinline width="320" height="240"></video><br>
+  <button id="captureBtn" class="take-image-btn">Capture</button>
+</div>
 
 <!-- Preview -->
-<div id="preview" hidden>
-    <img id="capturedImage" alt="Captured item preview">
-    <div id="spinner" style="display:none; text-align:center; margin-top:10px;">
-        <div class="loader"></div>
-        <p>Analyzing...</p>
-    </div>
-    <p><strong>Description:</strong> <span id="desc"></span></p>
-    <p><strong>Tags:</strong> <span id="tags"></span></p>
-    <button id="backBtn" class="take-image-btn grey">Back</button>
+<div id="preview" hidden style="text-align:center; margin-top:20px;">
+  <img id="capturedImage" alt="Captured item preview" width="320" height="240" style="display:block; margin:0 auto;">
+
+  <div id="spinner" style="display:none; text-align:center; margin-top:10px;">
+    <div class="loader"></div>
+    <p>Analyzing...</p>
+  </div>
+
+  <p class="label">Description:</p>
+  <textarea id="desc" rows="3"></textarea>
+
+  <p class="label">Tags (comma separated):</p>
+  <input id="tags" type="text">
+
+  <p class="label">Select Box:</p>
+  <select id="boxSelect">
+    <option value="">-- Select a Box --</option>
+  </select>
+
+  <button id="saveBtn" class="take-image-btn green">Save</button>
+  <button id="backBtn" class="take-image-btn grey">Retake</button>
 </div>
 
 <script src="{{ url_for('static', filename='createItem.js') }}"></script>
+
 <style>
+  #desc,
+  #tags {
+    width: 90%;
+    box-sizing: border-box;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 15px;
+    display: block;
+  }
+  #cameraContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin-top: 20px;
+  }
   .loader {
     border: 4px solid #f3f3f3;
     border-top: 4px solid #555;
@@ -31,12 +67,48 @@ https://www.w3schools.com/howto/howto_css_loader.asp-->
     width: 40px;
     height: 40px;
     animation: spin 1s linear infinite;
-    margin: 0 auto;
+    margin: 10px auto;
   }
 
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
+
+  .take-image-btn {
+    margin: 10px 5px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .take-image-btn.green {
+    background-color: #4CAF50;
+    color: white;
+  }
+
+  .take-image-btn.grey {
+    background-color: #ccc;
+    color: #000;
+  }
+  .label {
+  font-weight: 600;
+  width: 90%;
+  text-align: left;
+  margin-bottom: 2px;
+}
+#boxSelect {
+  width: 90%;
+  box-sizing: border-box;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 15px;
+  display: block; 
+}
 </style>
 {% endblock %}

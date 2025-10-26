@@ -51,15 +51,24 @@ def create_item():
 
         description = result_json.get("description", "")
         tags = result_json.get("tags", [])
-        print(result_text)
-        items_collection.insert_one(
-            {"description": description, "tags": tags, "image": image_data}
-        )
 
         return jsonify({"success": True, "description": description, "tags": tags})
 
     except Exception as e:
         import traceback
-
         traceback.print_exc()
         return jsonify({"success": False, "error": str(e)}), 500
+
+
+@item_bp.route("/save", methods=["POST"])
+def save_item():
+    data = request.get_json()
+    item = {
+        "image": data.get("image"),
+        "description": data.get("description"),
+        "tags": data.get("tags", []),
+        "box_id": data.get("box_id"),
+        "removed":"No" # always no when first creating the item
+    }
+    items_collection.insert_one(item)
+    return jsonify({"success": True})

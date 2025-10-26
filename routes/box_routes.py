@@ -53,6 +53,17 @@ def view_boxes():
     return render_template("view_box.html", boxes=boxes)
 
 
+# List of boxes as JSON
+@box_bp.route("/api/view", methods=["GET"])
+def get_boxes():
+    db = current_app.config["DB"]
+    box_db = db["boxes"]
+
+    boxes = list(box_db.find())  # get all boxes
+    for b in boxes:
+        b["_id"] = str(b["_id"])
+    return jsonify({"success": True, "boxes": boxes})
+
 # Delete boxes
 @box_bp.route("/delete/<box_id>", methods=["POST"])
 def delete_box(box_id):
