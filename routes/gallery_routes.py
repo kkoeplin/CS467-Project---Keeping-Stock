@@ -1,13 +1,17 @@
 from bson import ObjectId
 from flask import Blueprint, render_template, request, current_app
 
+
+ITEMS_COLLECTION_NAME = "items"
+BOXES_COLLECTION_NAME = "boxes"
+
 gallery_bp = Blueprint("gallery", __name__)
 
 @gallery_bp.route("/")
 def view():
     db = current_app.config["DB"]
-    items_collection = db["items"]
-    boxes_collection = db["boxes"]
+    items_collection = db[ITEMS_COLLECTION_NAME]
+    boxes_collection = db[BOXES_COLLECTION_NAME]
 
     # retrieve all items, boxes, and item tags
     all_items = list(
@@ -47,8 +51,8 @@ def filtered_view():
     is_htmx = request.headers.get("HX-Request") == "true"
 
     db = current_app.config["DB"]
-    boxes_collection = db["boxes"]
-    items_collection = db["items"]
+    items_collection = db[ITEMS_COLLECTION_NAME]
+    boxes_collection = db[BOXES_COLLECTION_NAME]
 
     # specify filters if used
     items_query_filter = {}
@@ -101,10 +105,8 @@ def filtered_view():
 @gallery_bp.route("/items/<item_id>", methods=["DELETE"])
 def delete_item(item_id):
     db = current_app.config["DB"]
-    items_collection = db["items"]
+    items_collection = db[ITEMS_COLLECTION_NAME]
     result = items_collection.delete_one({"_id": ObjectId(item_id)})
-    
     if result.deleted_count == 0:
         return "Failed to delete item. Item not found.", 404
-    
     return ""  # must return 200 (default) for item card to be removed using htmx
