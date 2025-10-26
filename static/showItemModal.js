@@ -6,8 +6,7 @@ function showItemModal(elem) {
     // mirror item card layout, adding item description and buttons
     modal.innerHTML = `<div>
         <img src="${ item.image.replace(/"/g, '') }">
-        <h3>${ item.title }</h3>
-        <p>${ item.description }</p>
+        <h3>${ item.description }</h3>
         <p class="item-card-box">Box: ${ item.box }</p>
         <div>${ item.tags.map(t => `<span class="item-card-tag">${ t }</span>`).join(' ')}</div>
         <ul>
@@ -18,7 +17,14 @@ function showItemModal(elem) {
                 hx-target="#item-card-${item._id}"
                 hx-swap="outerHTML"
                 hx-disabled-elt="this, #item-modal-close-btn"
-                hx-on::after-on-load="this.closest('dialog').close()"
+                hx-on::after-on-load="
+                    if (event.detail.successful) {
+                        this.closest('dialog').close();
+                        alert('The item has been deleted.');
+                    } else {
+                        alert(event.detail.xhr.responseText);
+                    }
+                "
             >
                 Delete
             </button>

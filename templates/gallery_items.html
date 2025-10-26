@@ -2,7 +2,7 @@
 
 {% if items %}
     {% for i in items %}
-        <!-- item card containing all the details (image, title, etc.) -->
+        <!-- item card containing all the details (image, description, etc.) -->
         <div 
             id="item-card-{{ i._id }}"
             class="item-card"
@@ -12,9 +12,9 @@
             <!-- image of the item -->
             <img src="{{ i.image.strip('\"') }}">
             
-            <!-- title of the item, box it belongs to, and its item tags -->
+            <!-- description of the item, box it belongs to, and its item tags -->
             <div>
-                <p>{{ i.title }}</p>
+                <p>{{ i.description }}</p>
                 <p class="item-card-box">Box: {{ i.box }}</p>
                 <div>
                     {% for t in i.tags %}

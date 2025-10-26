@@ -6,14 +6,14 @@ gallery_bp = Blueprint("gallery", __name__)
 @gallery_bp.route("/")
 def view():
     db = current_app.config["DB"]
-    items_collection = db["test-items"]
-    boxes_collection = db["test-boxes"]
+    items_collection = db["items"]
+    boxes_collection = db["boxes"]
 
     # retrieve all items, boxes, and item tags
     all_items = list(
         items_collection
-        .find({}, {"_id": 1, "title": 1, "description": 1, "tags": 1, "box_id": 1, "image": 1})  # specify 1 to include or 0 to exclude fields
-        .sort({"title": 1})  # specify 1 for ascending or -1 for descending
+        .find({}, {"_id": 1, "description": 1, "tags": 1, "box_id": 1, "image": 1})  # specify 1 to include or 0 to exclude fields
+        .sort({"description": 1})  # specify 1 for ascending or -1 for descending
     )
     all_boxes = list(
         boxes_collection
@@ -25,6 +25,7 @@ def view():
     for i in all_items:
         i["box"] = all_boxes.get(str(i.pop("box_id")), "Box not found")  # safe check
         i["_id"] = str(i["_id"])
+        i["description"] = i["description"].title()
         all_tags.update(i["tags"])
 
     return render_template(
@@ -46,8 +47,8 @@ def filtered_view():
     is_htmx = request.headers.get("HX-Request") == "true"
 
     db = current_app.config["DB"]
-    boxes_collection = db["test-boxes"]
-    items_collection = db["test-items"]
+    boxes_collection = db["boxes"]
+    items_collection = db["items"]
 
     # specify filters if used
     items_query_filter = {}
@@ -56,13 +57,13 @@ def filtered_view():
     if tags:
         items_query_filter["tags"] = {"$in": tags}
     if search:
-        items_query_filter["title"] = {"$regex": search.strip(), "$options": "i"}
+        items_query_filter["description"] = {"$regex": search.strip(), "$options": "i"}
 
     # retrieve items based on filters
     items = list(
         items_collection
-        .find(items_query_filter, {"_id": 1, "title": 1, "description": 1, "tags": 1, "box_id": 1, "image": 1})
-        .sort({"title": 1})
+        .find(items_query_filter, {"_id": 1, "description": 1, "tags": 1, "box_id": 1, "image": 1})
+        .sort({"description": 1})
     )
 
     # retrieve boxes based on filters for partial reload
@@ -76,6 +77,7 @@ def filtered_view():
     for i in items:
         i["box"] = boxes.get(str(i.pop("box_id")), "Box not found")
         i["_id"] = str(i["_id"])
+        i["description"] = i["description"].title()
     
     if is_htmx:
         # partial reload (default viewing)
@@ -99,7 +101,10 @@ def filtered_view():
 @gallery_bp.route("/items/<item_id>", methods=["DELETE"])
 def delete_item(item_id):
     db = current_app.config["DB"]
-    items_collection = db["test-items"]
-    items_collection.delete_one({"_id": ObjectId(item_id)})
-
+    items_collection = db["items"]
+    result = items_collection.delete_one({"_id": ObjectId(item_id)})
+    
+    if result.deleted_count == 0:
+        return "Failed to delete item. Item not found.", 404
+    
     return ""  # must return 200 (default) for item card to be removed using htmx
