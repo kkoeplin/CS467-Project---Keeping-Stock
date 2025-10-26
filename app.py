@@ -22,7 +22,7 @@ app.config["DB"] = db
 app.register_blueprint(item_bp, url_prefix="/items")
 app.register_blueprint(gallery_bp, url_prefix="/gallery")
 app.register_blueprint(box_bp, url_prefix="/boxes")
-app.register_blueprint(qr_generation_bp, url_prefix="/qr")
+app.register_blueprint(qr_generation_bp)
 
 @app.route("/")
 def home():

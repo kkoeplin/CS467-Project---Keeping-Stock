@@ -1,6 +1,7 @@
 import qrcode
 import io
-from flask import Flask, jsonify, send_file, Blueprint
+from flask import Flask, jsonify, send_file, Blueprint, current_app, render_template, abort
+from bson.objectid import ObjectId
 
 qr_generation_bp = Blueprint("qr_generation", __name__)
 
@@ -29,3 +30,16 @@ def generate_qr(box_id):
         as_attachment=True,
         download_name=f"box_{box_id}_qr.png"
     )
+
+@qr_generation_bp.route("/boxes/<box_id>")
+def scanned_qr(box_id):
+    db = current_app.config["DB"]
+    box_db = db["boxes"]
+    
+    box = box_db.find_one({"_id": ObjectId(box_id)})
+
+    if box:
+        return render_template("gallery_items.html", box=box)
+    else:
+        abort(404, description="Box not found")
+    
