@@ -7,8 +7,8 @@ function showItemModal(elem) {
     modal.innerHTML = `<div>
         <img src="${ item.image.replace(/"/g, '') }">
         <h3>${ item.description }</h3>
-        <p class="item-card-box">Box: ${ item.box }</p>
-        <div>${ item.tags.map(t => `<span class="item-card-tag">${ t }</span>`).join(' ')}</div>
+        <p>Box: ${ item.box }</p>
+        <div>${ item.tags.map(t => `<span class="item-card-tag item-modal-tag">${ t }</span>`).join(' ')}</div>
         <ul>
             <button 
                 type="button"
@@ -19,8 +19,8 @@ function showItemModal(elem) {
                 hx-disabled-elt="this, #item-modal-close-btn"
                 hx-on::after-on-load="
                     if (event.detail.successful) {
-                        this.closest('dialog').close();
                         alert('The item has been deleted.');
+                        this.closest('dialog').close();
                     } else {
                         alert(event.detail.xhr.responseText);
                     }

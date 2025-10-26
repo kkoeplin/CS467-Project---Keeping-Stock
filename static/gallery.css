@@ -82,7 +82,7 @@
     background-color: #f0f0f0;
     border-radius: 10px;
     padding: .15rem .5rem;
-    margin-bottom: .1rem;
+    margin-bottom: .15rem;
     font-size: .7rem;
 }
 .item-card:hover { box-shadow: 0px 0px 10px #0000002f; }
@@ -124,6 +124,10 @@
     height: 50%;
     object-fit: contain; 
 }
+.item-modal-tag {
+    font-size: .8rem;
+    margin-bottom: .25rem;
+ }
 #item-modal-delete-btn, #item-modal-close-btn {
     border: 1px solid #ddd;
     font-size: 1rem;
