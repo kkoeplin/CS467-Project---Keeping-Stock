@@ -59,6 +59,10 @@
     gap: 1rem;
     margin: 0 auto;
 }
+#item-card-hint {
+    font-style: italic;
+    margin-top: 2rem;
+}
 .item-card {
     border: 1px solid #ddd;
     border-radius: 12px;
@@ -90,7 +94,7 @@
 .item-card-box { font-size: .8rem; }
 
 #item-not-found {
-    text-align: left;
+    grid-column: 1 / -1;
     margin-left: 1rem;
     font-size: 1rem;
 }
