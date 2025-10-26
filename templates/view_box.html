@@ -6,6 +6,7 @@
 <script src="{{ url_for('static', filename='htmx.min.js') }}"></script>
 <script src="{{ url_for('static', filename='deleteBox.js') }}"></script>
 <script src="{{ url_for('static', filename='updateBox.js') }}"></script>
+<script src="{{ url_for('static', filename='generateQR.js') }}"></script>
 {% endblock %}
 
 {% block content %}
@@ -17,6 +18,7 @@
             <tr>
                 <th>Box ID</th>
                 <th>Description</th>
+                <th>Actions</th>
             </tr>
         </thead>
 
@@ -28,6 +30,7 @@
                 <td>
                     <button class="box-update-btn" data-box-id="{{ box._id }}">Update</button>
                     <button class="box-delete-btn" data-box-id="{{ box._id }}"> Delete</button>
+                    <button class="box-generate-qr-btn" data-box-id="{{ box._id }}"> Generate QR</button>
                 </td>
 
             <tr class="box-update-form-row" style="display:none;">
