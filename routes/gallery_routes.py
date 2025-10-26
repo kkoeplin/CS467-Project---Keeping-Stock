@@ -57,7 +57,7 @@ def filtered_view():
     # specify filters if used
     items_query_filter = {}
     if box_id:
-        items_query_filter["box_id"] = ObjectId(box_id)
+        items_query_filter["box_id"] = str(box_id)
     if tags:
         items_query_filter["tags"] = {"$in": tags}
     if search:
@@ -71,7 +71,7 @@ def filtered_view():
     )
 
     # retrieve boxes based on filters for partial reload
-    boxes_query_filter = {"_id": items_query_filter["box_id"]} if (box_id and is_htmx) else {}
+    boxes_query_filter = {"_id": ObjectId(items_query_filter["box_id"])} if (box_id and is_htmx) else {}
     boxes = list(
         boxes_collection
         .find(boxes_query_filter, {"_id": 1, "description": 1})
@@ -82,7 +82,7 @@ def filtered_view():
         i["box"] = boxes.get(str(i.pop("box_id")), "Box not found")
         i["_id"] = str(i["_id"])
         i["description"] = i["description"].title()
-    
+
     if is_htmx:
         # partial reload (default viewing)
         return render_template(
