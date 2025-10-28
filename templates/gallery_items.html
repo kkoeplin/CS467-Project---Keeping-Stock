@@ -1,18 +1,30 @@
+<dialog id="item-modal"></dialog>
+
 {% if items %}
     {% for i in items %}
-        <a href="#" class="item-card">
+        <!-- item card containing all the details (image, description, etc.) -->
+        <div 
+            id="item-card-{{ i._id }}"
+            class="item-card"
+            onclick="showItemModal(this)"
+            data-item='{{ i | tojson }}'
+        >
+            <!-- image of the item -->
             <img src="{{ i.image.strip('\"') }}">
+            
+            <!-- description of the item, box it belongs to, and its item tags -->
             <div>
-                <p class="item-card-title">{{ i.title }}</p>
-                <p class="item-card-box">Box: {{ i.box_description }}</p>
+                <p>{{ i.description }}</p>
+                <p class="item-card-box">Box: {{ i.box }}</p>
                 <div>
                     {% for t in i.tags %}
                         <span class="item-card-tag">{{ t }}</span>
                     {% endfor %}
                 </div>
             </div>
-        </a>
+        </div>
     {% endfor %}
 {% else %}
-        <p id="item-not-found"><span>⚠️</span>No items found.</p>
+        <!-- display message if no items are retrieved -->
+        <p id="item-not-found"><span>⚠️</span>No items match your search. Try different filters.</p>
 {% endif %}
