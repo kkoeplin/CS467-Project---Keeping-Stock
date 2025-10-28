@@ -72,3 +72,29 @@ def save_item():
     }
     items_collection.insert_one(item)
     return jsonify({"success": True})
+# Update Items
+@item_bp.route("/update/<item_id>", methods=["POST"])
+def update_item(item_id):
+
+    try:
+        # Get the data
+        data = request.get_json()
+        if not data:
+            return jsonify({"success": False, "error": "No data provided"}), 400
+        
+        new_desc = data.get("description") if data else None
+
+        # Check empty or space only inputs 
+        if not new_desc or not new_desc.strip():
+            return jsonify({"status": False, "error": "Descrip can't be empty or spaces only"})
+        
+        update_result = box_db.update_one(
+            {"_id": ObjectId(box_id)}, 
+            {"$set": {"description": new_desc.strip()}}
+        )
+
+        # Check if the box was modified
+        if update_result.modified_count == 1:
+            return jsonify({"status": True, "message": "Box was updated"})
+        else:
+            return jsonify({"status": False, "error": "Box not found"})

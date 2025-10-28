@@ -94,7 +94,7 @@ def update_box(box_id):
         return jsonify({"status": False, "error": "Need Box ID"})
      
     # Get the data
-    data = request.get_json()
+    data = request.get_json().
     new_desc = data.get("description") if data else None
 
     # Check empty or space only inputs 
