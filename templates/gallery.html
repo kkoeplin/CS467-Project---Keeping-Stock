@@ -28,10 +28,10 @@
         hx-push-url="true"
         hx-sync="this:replace"
         hx-trigger="
-            keyup throttle:300ms from:input,
-            search from:input[type='search'] queue:none,
-            change from:select queue:none,
-            change from:input[name='tags'] queue:none
+            keyup changed delay:300ms from:input,
+            search from:input[type='search'],
+            change from:select,
+            change from:input[name='tags']
         "
     >
 

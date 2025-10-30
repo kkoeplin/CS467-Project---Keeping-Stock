@@ -3,7 +3,7 @@ function showItemModal(elem) {
     const item = JSON.parse(elem.dataset.item)
     const deleteUrl = `/gallery/items/${encodeURIComponent(item._id)}`;
 
-    // mirror item card layout, adding item description and buttons
+    // mirror item card layout, adding buttons
     modal.innerHTML = `<div>
         <img src="${ item.image.replace(/"/g, '') }">
         <h3>${ item.description }</h3>
