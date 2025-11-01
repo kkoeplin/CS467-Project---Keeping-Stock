@@ -36,11 +36,11 @@
         hx-target="#gallery-items"    
         hx-push-url="true"
         hx-sync="this:replace"
-        hx-params="not selected"
         hx-trigger="
             keyup changed delay:300ms from:input,
             search from:input[type='search'],
-            change from:#select-multiple
+            change from:#select-multiple-boxes,
+            change from:#select-multiple-tags,
         "
     >
 
@@ -54,19 +54,17 @@
         />
 
         <!-- dropdown to select boxes -->
-        <input type="hidden" id="hidden-boxes" name="boxes">
-        <input type="hidden" id="hidden-tags"  name="tags">
-        <select id="select-multiple" name="selected" multiple>
-            <optgroup label="Boxes">
-                {% for box_id, desc in all_boxes.items() %}
-                    <option value="{{ box_id }}" data-group="boxes" {% if box_id in selected_boxes %}selected{% endif %}>{{ desc }}</option>
-                {% endfor %}
-            </optgroup>
-            <optgroup label="Item Tags">
-                {% for t in all_tags %}
-                    <option value="{{ t }}" data-group="tags" {% if t in selected_tags %}selected{% endif %}>{{ t }}</option>
-                {% endfor %}
-            </optgroup>
+        <select id="select-multiple-boxes" name="boxes" multiple>
+            {% for box_id, desc in all_boxes.items() %}
+                <option value="{{ box_id }}" {% if box_id in selected_boxes %}selected{% endif %}>{{ desc }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- dropdown to select tags -->
+        <select id="select-multiple-tags" name="tags" multiple>
+            {% for t in all_tags %}
+                <option value="{{ t }}" {% if t in selected_tags %}selected{% endif %}>{{ t }}</option>
+            {% endfor %}
         </select>
     </form>
 

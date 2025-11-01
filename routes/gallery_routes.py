@@ -58,8 +58,8 @@ def view():
 @gallery_bp.route("/filter")
 def filtered_view():
     args = request.args
-    box_ids = args.get("boxes", "").strip()
-    tags = args.get("tags", "").strip()
+    box_ids = args.getlist("boxes")
+    tags = args.getlist("tags")
     search = args.get("search", "").strip()
     is_htmx = request.headers.get("HX-Request") == "true"
 
@@ -70,10 +70,8 @@ def filtered_view():
     # specify item filters if used
     items_query_filter = {}
     if box_ids:
-        box_ids = box_ids.split(",")
         items_query_filter["box_id"] = {"$in": box_ids}
     if tags:
-        tags = tags.split(",")
         items_query_filter["tags"] = {"$in": tags}
     if search:
         items_query_filter["description"] = {"$regex": search, "$options": "i"}

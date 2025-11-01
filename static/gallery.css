@@ -14,13 +14,14 @@
 
 /* search bar for item description */
 #search-bar {
+    background: url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/icons/search.svg") no-repeat 0.75rem center;
     width: 100%;
     border: 1px solid #ccc;
     margin-bottom: .5rem;
     font-size: 1rem;
-    padding: .6rem 1.25rem;
+    padding: .6rem 1.25rem .6rem 2.5rem;
     border-radius: 5px;
-    min-height: 2.5rem;
+    min-height: 2.7rem;
 }
 
 /* search bar for boxes and item tags */
@@ -28,10 +29,15 @@
     text-align: left !important;
     border: 1px solid #ccc !important;
     border-radius: 5px !important;
-    padding: .6rem 1.25rem .1rem 1.25rem !important;
-    line-height: 1rem !important;
-    min-height: 2.5rem !important;
-    box-sizing: border-box;
+    padding: .6rem 1.25rem .1rem 2.5rem !important;
+    min-height: 2.7rem !important;
+    margin-bottom: .5rem !important; 
+}
+.select2-selection--multiple:has(#select2-select-multiple-boxes-container) {
+    background: url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/icons/boxes.svg") no-repeat 0.75rem center !important;
+}
+.select2-selection--multiple:has(#select2-select-multiple-tags-container) {
+    background: url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/icons/tags.svg") no-repeat 0.75rem center !important;
 }
 
 /* text of the item tag or box selected */
@@ -49,7 +55,7 @@
 
 /* text field for typing */
 .select2-search__field {
-    margin: 0 0 .5rem 0 !important;
+    margin: .15rem 0 .5rem 0 !important;
 }
 
 /* cross button for the entire search bar for boxes and item tags */
@@ -60,8 +66,15 @@
     color: #395f9f !important;
 }
 
+/* placeholder text */
+#search-bar::placeholder, .select2-search__field::placeholder {
+    font-size: .9rem !important;
+}
+
+/* select dropdown */
 .select2-results__options {
     max-height: 20rem !important;
+    font-size: .95rem !important;
 }
 
 /* message to users that the item cards are clickable */
