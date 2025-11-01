@@ -50,16 +50,16 @@ def view():
         items=all_items,
         all_boxes=all_boxes, 
         all_tags=all_tags,
-        checked_tags=[],
-        default_search="",
-        default_box_id="",
+        current_search="",
+        selected_boxes=[],
+        selected_tags=[]
     )
 
 @gallery_bp.route("/filter")
 def filtered_view():
     args = request.args
-    box_id = args.get("box")
-    tags = args.getlist("tags")
+    box_ids = args.get("boxes", "").strip()
+    tags = args.get("tags", "").strip()
     search = args.get("search", "").strip()
     is_htmx = request.headers.get("HX-Request") == "true"
 
@@ -69,15 +69,17 @@ def filtered_view():
 
     # specify item filters if used
     items_query_filter = {}
-    if box_id:
-        items_query_filter["box_id"] = str(box_id)
+    if box_ids:
+        box_ids = box_ids.split(",")
+        items_query_filter["box_id"] = {"$in": box_ids}
     if tags:
+        tags = tags.split(",")
         items_query_filter["tags"] = {"$in": tags}
     if search:
-        items_query_filter["description"] = {"$regex": search.strip(), "$options": "i"}
+        items_query_filter["description"] = {"$regex": search, "$options": "i"}
 
     # specify box filters if partial reload
-    boxes_query_filter = {"_id": ObjectId(items_query_filter["box_id"])} if (box_id and is_htmx) else {}
+    boxes_query_filter = {"_id": {"$in": [ObjectId(_id) for _id in items_query_filter["box_id"]["$in"]]}} if (box_ids and is_htmx) else {}
 
     # retrieve items and boxes based on filter
     items, boxes, _ = _query_items_boxes(items_collection, boxes_collection, items_query_filter, boxes_query_filter)
@@ -94,11 +96,11 @@ def filtered_view():
         return render_template(
             "gallery.html",
             items=items,
-            all_boxes=boxes,
+            all_boxes=boxes,  # boxes=all_boxes if is_htmx=False
             all_tags=all_tags,
-            checked_tags=tags,
-            default_search=search,
-            default_box_id=box_id,
+            current_search=search,
+            selected_boxes=box_ids,
+            selected_tags=tags
         )
 
 @gallery_bp.route("/items/<item_id>", methods=["DELETE"])

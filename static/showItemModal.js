@@ -8,7 +8,7 @@ function showItemModal(elem) {
         <img src="${ item.image.replace(/"/g, '') }">
         <h3>${ item.description }</h3>
         <p>Box: ${ item.box }</p>
-        <div>${ item.tags.map(t => `<span class="item-card-tag item-modal-tag">${ t }</span>`).join(' ')}</div>
+        <div>${ item.tags.map(t => `<span class="item-card-tag item-modal-tag-font">${ t }</span>`).join(' ')}</div>
         <ul>
             <button 
                 type="button"

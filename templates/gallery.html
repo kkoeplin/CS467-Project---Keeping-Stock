@@ -1,14 +1,23 @@
 <!-- https://htmx.org/examples/active-search/ -->
+ <!-- https://select2.org/getting-started/basic-usage -->
  
 {% extends "base.html" %}
 
 {% block title %}Find My Stuff{% endblock %}
 
 {% block head %}
-<script src="{{ url_for('static', filename='htmx.min.js') }}"></script>
-<script src="{{ url_for('static', filename='toggleItemTag.js') }}"></script>
-<script src="{{ url_for('static', filename='showItemModal.js') }}"></script>
 <link rel="stylesheet" href="{{ url_for('static', filename='gallery.css') }}">
+
+<!-- load JS/CSS libraries -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js" defer></script>
+
+<!-- load own JS scripts -->
+<script src="{{ url_for('static', filename='initSelect2.js') }}" defer></script>
+<script src="{{ url_for('static', filename='toggleItemTag.js') }}" defer></script>
+<script src="{{ url_for('static', filename='showItemModal.js') }}" defer></script>
 {% endblock %}
 
 {% block content %}
@@ -27,43 +36,42 @@
         hx-target="#gallery-items"    
         hx-push-url="true"
         hx-sync="this:replace"
+        hx-params="not selected"
         hx-trigger="
             keyup changed delay:300ms from:input,
             search from:input[type='search'],
-            change from:select,
-            change from:input[name='tags']
+            change from:#select-multiple
         "
     >
 
         <!-- search bar for items -->
-        <input id="search-bar" type="search" name="search" placeholder="Search" value="{{ default_search }}"/>
+        <input
+            id="search-bar" 
+            type="search" 
+            name="search" 
+            placeholder="Search item description" 
+            value="{{ current_search }}"
+        />
 
         <!-- dropdown to select boxes -->
-        <select id="select-dropdown" name="box">
-            <option value="" {% if default_box_id == '' %}selected{% endif %}>All Boxes</option>
-            {% for box_id, desc in all_boxes.items() %}
-                <option value="{{ box_id }}" {% if default_box_id == box_id %}selected{% endif %}>{{ desc }}</option>
-            {% endfor %}
+        <input type="hidden" id="hidden-boxes" name="boxes">
+        <input type="hidden" id="hidden-tags"  name="tags">
+        <select id="select-multiple" name="selected" multiple>
+            <optgroup label="Boxes">
+                {% for box_id, desc in all_boxes.items() %}
+                    <option value="{{ box_id }}" data-group="boxes" {% if box_id in selected_boxes %}selected{% endif %}>{{ desc }}</option>
+                {% endfor %}
+            </optgroup>
+            <optgroup label="Item Tags">
+                {% for t in all_tags %}
+                    <option value="{{ t }}" data-group="tags" {% if t in selected_tags %}selected{% endif %}>{{ t }}</option>
+                {% endfor %}
+            </optgroup>
         </select>
-
-        <!-- toggles for item tags -->
-        <div id="tags">
-            {% for t in all_tags %}
-                <label class="tag {% if t in checked_tags %}is-checked{% endif %}">
-                    <input
-                        type="checkbox"
-                        class="tag-checkbox"
-                        name="tags"
-                        value="{{ t }}"
-                    >
-                    <span>{{ t }}</span>
-                </label>
-            {% endfor %}
-        </div>
     </form>
 
     <!-- displaying items retrieved from MongoDB -->
-    <p id="item-card-hint"><small>Click an item card to view more details.</small></p>
+    <p id="item-card-hint">Click an item card to view more details.</p>
     <div id="gallery-items">
         {% include "gallery_items.html" %}
     </div>
