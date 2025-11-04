@@ -12,29 +12,29 @@ export function handleUpdateButton(item, modal, boxes) {
         }).join("");
 
         modal.innerHTML = `
-            <div style="padding: 20px; max-width: 400px;">
-                <h2 style="margin-bottom: 14px;">Edit Item</h2>
-                <p> Change the item description or location where the item is store </p>
-                <form id="item-update-form" style="display: flex; flex-direction: column; gap: 12px;">
-                    
-                    <div style="display: flex; flex-direction: column;">
-                        <label for="description"><strong>Description of Item:</strong></label>
-                        <input type="text" id="description" name="description" value="${item.description}" required style="padding: 6px; font-size: 1rem;">
-                    </div>
+        <div class="item-modal-edit">
+            <h2>Edit Item</h2>
+            <p>Change the item description or location where the item is stored</p>
+            <form id="item-update-form" class="item-update-form">
+                <div class="form-group">
+                    <label for="description"><strong>Description of Item:</strong></label>
+                    <input type="text" id="description" name="description" value="${item.description}" required>
+                </div>
 
-                    <div style="display: flex; flex-direction: column;">
-                        <label for="box_id"><strong>Box or Storage Space:</strong></label>
-                        <select id="box_id" name="box_id" style="padding: 6px; font-size: 1rem;">
-                            ${boxOptions}
-                        </select>
-                    </div>
+                <div class="form-group">
+                    <label for="box_id"><strong>Box or Storage Space:</strong></label>
+                    <select id="box_id" name="box_id">
+                        ${boxOptions}
+                    </select>
+                </div>
 
-                    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
-                        <button type="submit" style="padding: 6px 12px; cursor: pointer;">Save</button>
-                        <button type="button" id="cancel-btn" style="padding: 6px 12px; cursor: pointer;">Cancel</button>
-                    </div>
-                </form>
-            </div>`;
+                <div class="form-actions">
+                    <button type="submit">Save</button>
+                    <button type="button" id="cancel-btn">Cancel</button>
+                </div>
+            </form>
+        </div>
+        `;
 
         // Cancel button
         modal.querySelector("#cancel-btn").onclick = () => {

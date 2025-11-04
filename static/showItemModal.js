@@ -52,7 +52,7 @@ async function showItemModal(elem) {
     // required to specify this if htmx is included in javascript
    if (window.htmx) htmx.process(modal);
     
-    // handle update
+    // handle update for editing
     handleUpdateButton(item, modal, boxes);
 }
 window.showItemModal = showItemModal;
