@@ -144,3 +144,52 @@
     color: white;
     border: none;
 }
+
+
+/* Container for modal edit form */
+.item-modal-edit {
+    padding: 20px;
+    max-width: 400px;
+}
+
+/* Headings and text */
+.item-modal-edit h2 {
+    margin-bottom: 14px;
+}
+
+.item-modal-edit p {
+    margin-bottom: 12px;
+}
+
+/* Form layout */
+.item-update-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Each form group */
+.item-update-form .form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.item-update-form .form-group input,
+.item-update-form .form-group select {
+    padding: 6px;
+    font-size: 1rem;
+}
+
+/* Buttons container */
+.item-update-form .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* Buttons */
+.item-update-form button {
+    padding: 6px 12px;
+    cursor: pointer;
+}
