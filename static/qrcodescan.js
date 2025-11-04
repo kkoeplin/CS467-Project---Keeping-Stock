@@ -106,8 +106,7 @@ function scanQRCode() {
             if (detectionCount >= REQUIRED_CONFIRMATIONS) {
                 alert('QR Code detected: ' + detectedValue);
                 stopCamera();
-                // window.location.href = `gallery/filter?search=&box=${encodeURIComponent(detectedValue)}`;
-                window.location.href = `/boxes/${encodeURIComponent(detectedValue)}`;
+                window.location.href = `gallery/filter?boxes=${encodeURIComponent(detectedValue)}`;
                 return;
             }
         } else {
