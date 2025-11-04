@@ -1,5 +1,5 @@
 from bson import ObjectId
-from flask import Blueprint, render_template, request, current_app
+from flask import Blueprint, render_template, request, current_app, jsonify
 
 
 ITEMS_COLLECTION_NAME = "items"
@@ -109,3 +109,53 @@ def delete_item(item_id):
     if result.deleted_count == 0:
         return "Failed to delete item. Item not found.", 404
     return ""  # must return 200 (default) for item card to be removed using htmx
+
+
+@gallery_bp.route("/items/<item_id>", methods=["POST"])
+def update_item(item_id):
+
+    print("Updating item:", item_id)
+    db = current_app.config["DB"]
+    items_collection = db[ITEMS_COLLECTION_NAME]
+    boxes_collection = db[BOXES_COLLECTION_NAME]
+
+    if not item_id:
+        return jsonify({"status": False, "error": "Need the item ID"})
+
+    # Get data 
+    data = request.get_json() or {}
+    new_desc = data.get("description")
+    new_tags = data.get("tags")
+    new_box_name = data.get("box_id")
+
+    # Check for empty descripts or spaces
+    if new_desc is not None and not new_desc.strip():
+        return jsonify({"status": False, "error": "Description can't be empty or spaces only"})
+
+    # Udate the items fields
+    update_fields = {}
+
+    if new_desc is not None:
+        update_fields["description"] = new_desc.strip()
+    if new_tags is not None:
+        update_fields["tags"] = new_tags
+
+    if new_box_name:
+        box_doc = boxes_collection.find_one({"_id": ObjectId(new_box_name)})
+        if not box_doc:
+            return jsonify({"status": False, "error": "Box not found"})
+        
+        update_fields["box_id"] = str(box_doc["_id"])
+
+    if not update_fields:
+        return jsonify({"status": False, "error": "No fields were updated"})
+    
+    update_result = items_collection.update_one(
+        {"_id": ObjectId(item_id)},
+        {"$set": update_fields}
+    )
+    # Respond based on result
+    if update_result.modified_count == 1:
+        return jsonify({"status": True, "message": "Item was updated"})
+    else:
+        return jsonify({"status": False, "error": "No changes where made"})

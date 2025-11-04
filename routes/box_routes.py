@@ -86,7 +86,8 @@ def delete_box(box_id):
 # Update Box
 @box_bp.route("/update/<box_id>", methods=["POST"])
 def update_box(box_id):
-    print("Updating box:", box_id)
+
+    print("You are updateing box:", box_id)
     db = current_app.config["DB"]
     box_db = db["boxes"]
 
@@ -99,7 +100,7 @@ def update_box(box_id):
 
     # Check empty or space only inputs 
     if not new_desc or not new_desc.strip():
-        return jsonify({"status": False, "error": "Descrip can't be empty or spaces only"})
+        return jsonify({"status": False, "error": "Descrip can't be empty or only have spaces"})
     
     update_result = box_db.update_one(
         {"_id": ObjectId(box_id)}, 

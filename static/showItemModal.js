@@ -1,8 +1,16 @@
-function showItemModal(elem) {
+import { handleUpdateButton } from './updateItem.js';
+
+async function showItemModal(elem) {
     const modal = document.getElementById("item-modal");
     const item = JSON.parse(elem.dataset.item)
     const deleteUrl = `/gallery/items/${encodeURIComponent(item._id)}`;
 
+    // Get all boxes for dropdown in edit functionality
+    const boxResults = await fetch("/boxes/api/view");
+    const boxData = await boxResults.json();
+    const boxes = boxData.boxes || [];
+
+    // mirror item card layout, adding item description and buttons
     // mirror item card layout, adding buttons
     modal.innerHTML = `<div>
         <img src="${ item.image.replace(/"/g, '') }">
@@ -10,6 +18,7 @@ function showItemModal(elem) {
         <p>Box: ${ item.box }</p>
         <div>${ item.tags.map(t => `<span class="item-card-tag item-modal-tag-font">${ t }</span>`).join(' ')}</div>
         <ul>
+            
             <button 
                 type="button"
                 id="item-modal-delete-btn" 
@@ -35,10 +44,16 @@ function showItemModal(elem) {
             >
                 Close
             </button>
+            
+            <button type="button" id="item-modal-edit-btn">Edit</button> 
         </ul>
     </div>`;
     modal.showModal();
 
     // required to specify this if htmx is included in javascript
-    htmx.process(modal);
+   if (window.htmx) htmx.process(modal);
+    
+    // handle update for editing
+    handleUpdateButton(item, modal, boxes);
 }
+window.showItemModal = showItemModal;
