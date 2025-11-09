@@ -23,13 +23,13 @@
 {% block content %}
 <h1>Find My Stuff</h1>
 
-<div id="search-form">
+<div id="search-form" class="search-form-hidden"">
     <!--
         The following actions (hx-trigger) will trigger the GET request (hx-get):
         - typing in the search bar
         - clicking on the cross in the search bar
-        - selecting a box from the dropdown
-        - clicking on an item tag 
+        - selecting/deselecting a box from the dropdown
+        - selecting/deselecting an item tag from the dropdown
     -->
     <form
         hx-get="{{ url_for('gallery.filtered_view') }}"
@@ -37,10 +37,10 @@
         hx-push-url="true"
         hx-sync="this:replace"
         hx-trigger="
-            keyup changed delay:300ms from:input,
-            search from:input[type='search'],
+            keyup changed delay:300ms from:#search-bar,
+            search from:#search-bar,
             change from:#select-multiple-boxes,
-            change from:#select-multiple-tags,
+            change from:#select-multiple-tags
         "
     >
 

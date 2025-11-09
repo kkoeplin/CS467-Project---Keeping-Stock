@@ -60,7 +60,7 @@ def filtered_view():
     args = request.args
     box_ids = args.getlist("boxes")
     tags = args.getlist("tags")
-    search = args.get("search", "").strip()
+    search = args.get("search", "")
     is_htmx = request.headers.get("HX-Request") == "true"
 
     db = current_app.config["DB"]
@@ -73,8 +73,8 @@ def filtered_view():
         items_query_filter["box_id"] = {"$in": box_ids}
     if tags:
         items_query_filter["tags"] = {"$in": tags}
-    if search:
-        items_query_filter["description"] = {"$regex": search, "$options": "i"}
+    if search.strip():  # call .strip() here to avoid changing the search bar content
+        items_query_filter["description"] = {"$regex": search.strip(), "$options": "i"}
 
     # specify box filters if partial reload
     boxes_query_filter = {"_id": {"$in": [ObjectId(_id) for _id in items_query_filter["box_id"]["$in"]]}} if (box_ids and is_htmx) else {}
