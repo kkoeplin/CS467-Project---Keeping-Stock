@@ -162,7 +162,7 @@
     justify-content: space-between;
     margin-top: 2rem;
 }
-#item-modal-delete-btn, #item-modal-close-btn {
+.item-modal-btn {
     border: 1px solid #ddd;
     font-size: 1rem;
     padding: .5rem .75rem;
@@ -174,7 +174,14 @@
     color: white;
     border: none;
 }
-
+#item-modal-close-btn {
+    font-size: .9rem;
+    color: #3366cc;
+    text-decoration: underline;
+    cursor: pointer;
+    background-color: white;
+    border: none;
+}
 
 /* Container for modal edit form */
 .item-modal-edit {

@@ -21,6 +21,7 @@ async function showItemModal(elem) {
             <button 
                 type="button"
                 id="item-modal-delete-btn" 
+                class="item-modal-btn"
                 hx-delete="${deleteUrl}"
                 hx-target="#item-card-${item._id}"
                 hx-swap="outerHTML"
@@ -44,7 +45,7 @@ async function showItemModal(elem) {
                 Close
             </button>
             
-            <button type="button" id="item-modal-edit-btn">Edit</button> 
+            <button type="button" id="item-modal-edit-btn" class="item-modal-btn">Edit</button> 
         </ul>
     </div>`;
     modal.showModal();
