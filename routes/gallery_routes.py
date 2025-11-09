@@ -94,7 +94,7 @@ def filtered_view():
         return render_template(
             "gallery.html",
             items=items,
-            all_boxes=boxes,  # boxes=all_boxes if is_htmx=False
+            all_boxes=boxes,  # when is_htmx=False, all the boxes are retrieved from above code
             all_tags=all_tags,
             current_search=search,
             selected_boxes=box_ids,

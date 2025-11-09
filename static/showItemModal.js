@@ -10,8 +10,7 @@ async function showItemModal(elem) {
     const boxData = await boxResults.json();
     const boxes = boxData.boxes || [];
 
-    // mirror item card layout, adding item description and buttons
-    // mirror item card layout, adding buttons
+    // mirror item card layout
     modal.innerHTML = `<div>
         <img src="${ item.image.replace(/"/g, '') }">
         <h3>${ item.description }</h3>
