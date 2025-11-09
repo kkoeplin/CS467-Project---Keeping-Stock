@@ -25,7 +25,7 @@ async function showItemModal(elem) {
                 hx-delete="${deleteUrl}"
                 hx-target="#item-card-${item._id}"
                 hx-swap="outerHTML"
-                hx-disabled-elt="this, #item-modal-close-btn"
+                hx-disabled-elt="this, #item-modal-close-btn, #item-modal-edit-btn"
                 hx-on::after-on-load="
                     if (event.detail.successful) {
                         alert('The item has been deleted.');
