@@ -9,6 +9,18 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("button working", button);
     button.onclick = async () => {
       const boxId = button.dataset.boxId;
+
+      const itemsInBox = await fetch(`${window.location.origin}/items/in_box/${boxId}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const itemsData = await itemsInBox.json();
+      if (Array.isArray(itemsData) && itemsData.length > 0) {
+        alert("Cannot delete this box because it contains items. Please move or delete the items first.");
+        return;
+      }
+
       const result = await fetch(`${window.location.origin}/boxes/delete/${boxId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
