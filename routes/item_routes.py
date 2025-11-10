@@ -72,3 +72,14 @@ def save_item():
     }
     items_collection.insert_one(item)
     return jsonify({"success": True})
+
+@item_bp.route("/in_box/<box_id>", methods=['GET'])
+def get_items_by_box(box_id):
+    try: 
+        items =  list(items_collection.find({"box_id": box_id}, {"_id": 1, "description": 1}))
+        for item in items:
+            item["_id"] = str(item["_id"])
+        return jsonify(items), 200
+    except Exception as e:
+        return jsonify({"error": "Failed to retrieve items for this box."}), 500
+    
