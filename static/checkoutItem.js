@@ -63,7 +63,13 @@ export function handleCheckoutButton(item, modal) {
                     modal.close();
 
                     const card = document.getElementById(`item-card-${item._id}`);
-                    if (card) card.classList.add("checked-out");
+
+                    //label Checkout
+                    if (card){
+                        card.classList.add("checked-out");
+                        const desc = card.querySelector(".item-description");
+                        if (desc) desc.textContent += " (Removed / Checked Out)";
+                    } 
                 } else {
                     alert("Checkout fail: " + data.error);
                 }

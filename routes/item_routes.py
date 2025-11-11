@@ -99,10 +99,10 @@ def item_checkout():
     object_ids = [ObjectId(i) for i in item_id]
 
     # update to True for when items are checked out
-    checkoutInfo = items_collection.update_many(
+    items_collection.update_many(
         {"_id": {"$in": object_ids}},
         {"$set": {
-            "check_out": True,
+            "removed": "Yes",
             "checked_out_by": user,
             "checkout_date": date
         }}
