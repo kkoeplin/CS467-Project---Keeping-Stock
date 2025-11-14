@@ -1,3 +1,4 @@
+from bson import ObjectId
 from flask import Blueprint, request, jsonify, render_template, current_app
 import base64, json, os, certifi
 from pymongo import MongoClient
@@ -8,9 +9,6 @@ mongo_uri = os.getenv("MONGO_URI")
 client = MongoClient(mongo_uri, tlsCAFile=certifi.where())
 db = client["keeping_stock"]
 items_collection = db["items"]
-
-item_bp = Blueprint("item", __name__)
-
 
 @item_bp.route("/create", methods=["GET"])
 def create_item_page():
@@ -68,7 +66,8 @@ def save_item():
         "description": data.get("description"),
         "tags": data.get("tags", []),
         "box_id": data.get("box_id"),
-        "removed":"No" # always no when first creating the item
+        "removed": "No",  # always no when first creating the item
+        "check_out": False  # Flag for checking out item
     }
     items_collection.insert_one(item)
     return jsonify({"success": True})
@@ -82,4 +81,30 @@ def get_items_by_box(box_id):
         return jsonify(items), 200
     except Exception as e:
         return jsonify({"error": "Failed to retrieve items for this box."}), 500
+  
+@item_bp.route("/checkout", methods=["POST"])
+def item_checkout():
+    data = request.get_json()
+    item_id = data.get("item_ids", [])
+    user = data.get("user")
+    date = data.get("date")
+
+    if not item_id:
+        return jsonify({"success": False, "error": "No ID provided"}), 400
     
+    if not user:
+        return jsonify({"success": False, "error": "No user provided"}), 400
+    
+    # change ID string into object ID
+    object_ids = [ObjectId(i) for i in item_id]
+
+    # update to True for when items are checked out
+    items_collection.update_many(
+        {"_id": {"$in": object_ids}},
+        {"$set": {
+            "removed": "Yes",
+            "checked_out_by": user,
+            "checkout_date": date
+        }}
+    )
+    return jsonify({"success": True, "message": f"Item checked out by {user}."})
