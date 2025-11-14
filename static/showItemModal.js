@@ -15,10 +15,19 @@ async function showItemModal(elem) {
     // mirror item card layout
     modal.innerHTML = `<div>
         <img src="${ item.image.replace(/"/g, '') }">
-        <h3>${ item.description }</h3>
+        <div>
+            <h3>${ item.description }</h3>
+            <button 
+                type="button"
+                id="item-modal-close-btn" 
+                onclick="this.closest('dialog').close()"
+            >
+                Close
+            </button>
+        </div>
         <p>Box: ${ item.box }</p>
         <div>${ item.tags.map(t => `<span class="item-card-tag item-modal-tag-font">${ t }</span>`).join(' ')}</div>
-        <ul>
+        <div id="item-modal-controls">
             
             <button 
                 type="button"
@@ -32,16 +41,13 @@ async function showItemModal(elem) {
             >
                 Delete
             </button>
-            <button 
-                type="button"
-                id="item-modal-close-btn" 
-                onclick="this.closest('dialog').close()"
-            >
-                Close
-            </button>
-            <button type="button" id="item-modal-edit-btn">Edit</button> 
-            <button type="button" id= "item-modal-checkout-btn"> Check Out </button>
-        </ul>
+
+            <!-- right align all other buttons away from Delete to make it nicer -->
+            <ul>
+                <button type="button" id="item-modal-edit-btn" class="item-modal-btn">Edit</button> 
+                <button type="button" id= "item-modal-checkout-btn" class="item-modal-btn"> Check Out </button>
+            </ul>
+        </div>
     </div>`;
     modal.showModal();
 

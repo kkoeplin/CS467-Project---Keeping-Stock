@@ -158,10 +158,18 @@
     font-size: .8rem;
     margin-bottom: .25rem;
  }
- #item-modal ul {
+#item-modal-controls {
     display: flex;
     justify-content: space-between;
-    margin-top: 2rem;
+    margin: 1rem 0;
+}
+#item-modal-controls > * {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+#item-modal div:has(> #item-modal-close-btn) {
+    display: flex;
+    justify-content: space-between;
 }
 .item-modal-btn {
     border: 1px solid #ddd;
@@ -182,6 +190,9 @@
     cursor: pointer;
     background-color: white;
     border: none;
+}
+#item-modal-close-btn:focus {
+    outline: none;
 }
 
 /* Container for modal edit form */
