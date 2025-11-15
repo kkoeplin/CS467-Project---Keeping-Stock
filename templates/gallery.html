@@ -23,7 +23,7 @@
 {% block content %}
 <h1>Find My Stuff</h1>
 
-<div id="search-form" class="search-form-hidden"">
+<div id="search-form" class="search-form-hidden">
     <!--
         The following actions (hx-trigger) will trigger the GET request (hx-get):
         - typing in the search bar
@@ -36,6 +36,7 @@
         hx-target="#gallery-items"    
         hx-push-url="true"
         hx-sync="this:replace"
+        hx-indicator="#gallery-items, #loader"
         hx-trigger="
             keyup changed delay:300ms from:#search-bar,
             search from:#search-bar,
@@ -66,12 +67,13 @@
                 <option value="{{ t }}" {% if t in selected_tags %}selected{% endif %}>{{ t }}</option>
             {% endfor %}
         </select>
-    </form>
 
-    <!-- displaying items retrieved from MongoDB -->
-    <p id="item-card-hint">Click an item card to view more details.</p>
-    <div id="gallery-items">
-        {% include "gallery_items.html" %}
-    </div>
+        <!-- displaying items retrieved from MongoDB -->
+        <p id="item-card-hint">Click an item card to view more details.</p>
+        <div id="loader" class="htmx-indicator"></div>
+        <div id="gallery-items">
+            {% include "gallery_items.html" %}
+        </div>
+    </form>
 </div>
 {% endblock %}

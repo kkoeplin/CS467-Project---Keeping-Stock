@@ -92,7 +92,35 @@
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 1rem;
     margin: 0 auto;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 200ms ease-in;
 }
+#gallery-items.htmx-request {
+    opacity: 0;
+    visibility: hidden;
+}
+/* taken from https://cssloaders.github.io/ */
+#loader {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    border: 5px solid #2c3e50;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+} 
 
 /* item card and its components*/
 .item-card {
