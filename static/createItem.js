@@ -120,7 +120,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
         const data = await res.json();
         if (data.success) {
             alert('Item saved successfully!');
-            window.location.href = '/items';
+            window.location.href = '/gallery';
         } else {
             alert('Failed to save item. Please try again.');
         }
