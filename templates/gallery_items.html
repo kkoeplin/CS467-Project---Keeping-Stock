@@ -5,7 +5,7 @@
         <!-- item card containing all the details (image, description, etc.) -->
         <div 
             id="item-card-{{ i._id }}"
-            class="item-card"
+            class="item-card {% if i.removed == 'Yes' %} checked-out{% endif %}"
             onclick="showItemModal(this)"
             data-item='{{ i | tojson }}'
         >

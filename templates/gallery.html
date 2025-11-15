@@ -17,31 +17,31 @@
 
 <!-- Custom JS -->
 <script src="{{ url_for('static', filename='initSelect2.js') }}" defer></script>
-<script src="{{ url_for('static', filename='toggleItemTag.js') }}" defer></script>
 <script type="module" src="{{ url_for('static', filename='showItemModal.js') }}" defer></script>
 {% endblock %}
 
 {% block content %}
 <h1>Find My Stuff</h1>
 
-<div id="search-form">
+<div id="search-form" class="search-form-hidden">
     <!--
         The following actions (hx-trigger) will trigger the GET request (hx-get):
         - typing in the search bar
         - clicking on the cross in the search bar
-        - selecting a box from the dropdown
-        - clicking on an item tag 
+        - selecting/deselecting a box from the dropdown
+        - selecting/deselecting an item tag from the dropdown
     -->
     <form
         hx-get="{{ url_for('gallery.filtered_view') }}"
         hx-target="#gallery-items"    
         hx-push-url="true"
         hx-sync="this:replace"
+        hx-indicator="#gallery-items, #loader"
         hx-trigger="
-            keyup changed delay:300ms from:input,
-            search from:input[type='search'],
+            keyup changed delay:300ms from:#search-bar,
+            search from:#search-bar,
             change from:#select-multiple-boxes,
-            change from:#select-multiple-tags,
+            change from:#select-multiple-tags
         "
     >
 
@@ -67,12 +67,13 @@
                 <option value="{{ t }}" {% if t in selected_tags %}selected{% endif %}>{{ t }}</option>
             {% endfor %}
         </select>
-    </form>
 
-    <!-- displaying items retrieved from MongoDB -->
-    <p id="item-card-hint">Click an item card to view more details.</p>
-    <div id="gallery-items">
-        {% include "gallery_items.html" %}
-    </div>
+        <!-- displaying items retrieved from MongoDB -->
+        <p id="item-card-hint">Click an item card to view more details.</p>
+        <div id="loader" class="htmx-indicator"></div>
+        <div id="gallery-items">
+            {% include "gallery_items.html" %}
+        </div>
+    </form>
 </div>
 {% endblock %}
