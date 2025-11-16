@@ -1,19 +1,38 @@
+# https://www.mongodb.com/docs/atlas/atlas-search/operators-collectors/text/
+
 from bson import ObjectId
 from flask import Blueprint, render_template, request, current_app, jsonify
 
 
 ITEMS_COLLECTION_NAME = "items"
 BOXES_COLLECTION_NAME = "boxes"
+SEARCH_INDEX = "items_fuzzy"
 
 gallery_bp = Blueprint("gallery", __name__)
 
 def _query_items_boxes(items_collection, boxes_collection, items_query_filter, boxes_query_filter, return_tags=False):
+    # re-organize item filters into an aggregation pipeline
+    pipeline = []
+    if "description" in items_query_filter:
+        pipeline.append({
+            "$search": {
+                "index": SEARCH_INDEX,
+                "autocomplete": {
+                    "query": items_query_filter.pop("description"),
+                    "path": "description",  # name of data field to search
+                    "fuzzy": {}  # enables fuzzy matching with default options
+                }
+            }
+        })
+    if items_query_filter:  # remaining key-value pairs follow what is usually fed into .find()
+        pipeline.append({"$match": items_query_filter})
+    pipeline.extend([
+        { "$project": {"_id": 1, "description": 1, "tags": 1, "box_id": 1, "image": 1, "removed": 1} },
+        { "$sort": {"description": 1} }
+    ])
+
     # retrieve items based on filter
-    items = list(
-        items_collection
-        .find(items_query_filter, {"_id": 1, "description": 1, "tags": 1, "box_id": 1, "image": 1})  # specify 1 to include or 0 to exclude fields
-        .sort({"description": 1})  # specify 1 for ascending or -1 for descending
-    )
+    items = list(items_collection.aggregate(pipeline))
 
     # retrieve boxes based on filter
     boxes = list(
@@ -60,7 +79,7 @@ def filtered_view():
     args = request.args
     box_ids = args.getlist("boxes")
     tags = args.getlist("tags")
-    search = args.get("search", "").strip()
+    search = args.get("search", "")
     is_htmx = request.headers.get("HX-Request") == "true"
 
     db = current_app.config["DB"]
@@ -69,15 +88,17 @@ def filtered_view():
 
     # specify item filters if used
     items_query_filter = {}
+    if search.strip():  # call .strip() here to avoid changing the search bar content
+        items_query_filter["description"] = search.strip()
     if box_ids:
         items_query_filter["box_id"] = {"$in": box_ids}
     if tags:
         items_query_filter["tags"] = {"$in": tags}
-    if search:
-        items_query_filter["description"] = {"$regex": search, "$options": "i"}
 
     # specify box filters if partial reload
-    boxes_query_filter = {"_id": {"$in": [ObjectId(_id) for _id in items_query_filter["box_id"]["$in"]]}} if (box_ids and is_htmx) else {}
+    boxes_query_filter = {}
+    if (box_ids and is_htmx):
+        boxes_query_filter = {"_id": {"$in": [ObjectId(_id) for _id in items_query_filter["box_id"]["$in"]]}}
 
     # retrieve items and boxes based on filter
     items, boxes, _ = _query_items_boxes(items_collection, boxes_collection, items_query_filter, boxes_query_filter)
@@ -94,7 +115,7 @@ def filtered_view():
         return render_template(
             "gallery.html",
             items=items,
-            all_boxes=boxes,  # boxes=all_boxes if is_htmx=False
+            all_boxes=boxes,  # when is_htmx=False, all the boxes are retrieved from above code
             all_tags=all_tags,
             current_search=search,
             selected_boxes=box_ids,
