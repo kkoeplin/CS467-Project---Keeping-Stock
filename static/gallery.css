@@ -11,6 +11,8 @@
     margin: 3rem auto;
     padding: 1.5rem;
 }
+/* hide form to let Select2 load before displaying */
+.search-form-hidden { visibility: hidden; }
 
 /* search bar for item description */
 #search-bar {
@@ -90,7 +92,35 @@
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 1rem;
     margin: 0 auto;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 200ms ease-in;
 }
+#gallery-items.htmx-request {
+    opacity: 0;
+    visibility: hidden;
+}
+/* taken from https://cssloaders.github.io/ */
+#loader {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    border: 5px solid #2c3e50;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+} 
 
 /* item card and its components*/
 .item-card {
@@ -141,6 +171,7 @@
     padding: 0;
     text-align: left;
     width: 30%;
+    max-width: 600px;
     box-shadow: 0px 0px 20px #0000005f;
 }
 #item-modal > div > * { padding: 0 1.5rem; }
@@ -155,12 +186,20 @@
     font-size: .8rem;
     margin-bottom: .25rem;
  }
- #item-modal ul {
+#item-modal-controls {
     display: flex;
     justify-content: space-between;
-    margin-top: 2rem;
+    margin: 2rem 0 1rem 0;
 }
-#item-modal-delete-btn, #item-modal-close-btn {
+#item-modal-controls > * {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+#item-modal div:has(> #item-modal-close-btn) {
+    display: flex;
+    justify-content: space-between;
+}
+.item-modal-btn {
     border: 1px solid #ddd;
     font-size: 1rem;
     padding: .5rem .75rem;
@@ -172,7 +211,17 @@
     color: white;
     border: none;
 }
-
+#item-modal-close-btn {
+    font-size: .9rem;
+    color: #3366cc;
+    text-decoration: underline;
+    cursor: pointer;
+    background-color: white;
+    border: none;
+}
+#item-modal-close-btn:focus {
+    outline: none;
+}
 
 /* Container for modal edit form */
 .item-modal-edit {
@@ -220,4 +269,9 @@
 .item-update-form button {
     padding: 6px 12px;
     cursor: pointer;
+}
+
+.checked-out {
+    opacity: 0.6;
+    background-color: #f8d7da;
 }

@@ -1,4 +1,6 @@
 import { handleUpdateButton } from './updateItem.js';
+import { handleCheckoutButton } from './checkoutItem.js';
+
 
 async function showItemModal(elem) {
     const modal = document.getElementById("item-modal");
@@ -10,33 +12,11 @@ async function showItemModal(elem) {
     const boxData = await boxResults.json();
     const boxes = boxData.boxes || [];
 
-    // mirror item card layout, adding item description and buttons
-    // mirror item card layout, adding buttons
+    // mirror item card layout
     modal.innerHTML = `<div>
         <img src="${ item.image.replace(/"/g, '') }">
-        <h3>${ item.description }</h3>
-        <p>Box: ${ item.box }</p>
-        <div>${ item.tags.map(t => `<span class="item-card-tag item-modal-tag-font">${ t }</span>`).join(' ')}</div>
-        <ul>
-            
-            <button 
-                type="button"
-                id="item-modal-delete-btn" 
-                hx-delete="${deleteUrl}"
-                hx-target="#item-card-${item._id}"
-                hx-swap="outerHTML"
-                hx-disabled-elt="this, #item-modal-close-btn"
-                hx-on::after-on-load="
-                    if (event.detail.successful) {
-                        alert('The item has been deleted.');
-                        this.closest('dialog').close();
-                    } else {
-                        alert(event.detail.xhr.responseText);
-                    }
-                "
-            >
-                Delete
-            </button>
+        <div>
+            <h3>${ item.description }</h3>
             <button 
                 type="button"
                 id="item-modal-close-btn" 
@@ -44,9 +24,30 @@ async function showItemModal(elem) {
             >
                 Close
             </button>
+        </div>
+        <p>Box: ${ item.box }</p>
+        <div>${ item.tags.map(t => `<span class="item-card-tag item-modal-tag-font">${ t }</span>`).join(' ')}</div>
+        <div id="item-modal-controls">
             
-            <button type="button" id="item-modal-edit-btn">Edit</button> 
-        </ul>
+            <button 
+                type="button"
+                id="item-modal-delete-btn" 
+                class="item-modal-btn"
+                hx-delete="${deleteUrl}"
+                hx-target="#item-card-${item._id}"
+                hx-swap="outerHTML"
+                hx-disabled-elt="this, #item-modal-close-btn, #item-modal-edit-btn, #item-modal-checkout-btn"
+                hx-on::after-on-load="if (event.detail.successful){ alert('The item has been deleted.'); this.closest('dialog').close(); } else { alert(event.detail.xhr.responseText); }"
+            >
+                Delete
+            </button>
+
+            <!-- right align all other buttons away from Delete to make it nicer -->
+            <ul>
+                <button type="button" id="item-modal-edit-btn" class="item-modal-btn">Edit</button> 
+                <button type="button" id= "item-modal-checkout-btn" class="item-modal-btn"> Check Out </button>
+            </ul>
+        </div>
     </div>`;
     modal.showModal();
 
@@ -55,5 +56,8 @@ async function showItemModal(elem) {
     
     // handle update for editing
     handleUpdateButton(item, modal, boxes);
+
+    // handle checkout for items 
+    handleCheckoutButton(item, modal);
 }
 window.showItemModal = showItemModal;
