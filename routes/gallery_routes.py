@@ -27,7 +27,7 @@ def _query_items_boxes(items_collection, boxes_collection, items_query_filter, b
     if items_query_filter:  # remaining key-value pairs follow what is usually fed into .find()
         pipeline.append({"$match": items_query_filter})
     pipeline.extend([
-        { "$project": {"_id": 1, "description": 1, "tags": 1, "box_id": 1, "image": 1, "removed": 1} },
+        { "$project": {"_id": 1, "description": 1, "tags": 1, "box_id": 1, "image": 1, "removed": 1, "checked_out": 1, "checked_out_by": 1, "checkout_date": 1}},
         { "$sort": {"description": 1} }
     ])
 

@@ -5,7 +5,7 @@
         <!-- item card containing all the details (image, description, etc.) -->
         <div 
             id="item-card-{{ i._id }}"
-            class="item-card {% if i.removed == 'Yes' %} checked-out{% endif %}"
+            class="item-card {% if i.removed == 'Yes' or i.checked_out %} checked-out{% endif %}"
             onclick="showItemModal(this)"
             data-item='{{ i | tojson }}'
         >
@@ -14,7 +14,15 @@
             
             <!-- description of the item, box it belongs to, and its item tags -->
             <div>
-                <p>{{ i.description }}</p>
+                <p class="item-description">
+                    {{ i.description }} 
+                    {% if i.checked_out %}
+                    <span style="color:rgb(141, 1, 1); display:block; margin-top: 3px;">
+                        Checked Out by: {{ i.checked_out_by }}<br>
+                        Date: {{ i.checkout_date }}
+                    </span>
+            {% endif %}
+                 </p>
                 <p class="item-card-box">Box: {{ i.box }}</p>
                 <div>
                     {% for t in i.tags %}

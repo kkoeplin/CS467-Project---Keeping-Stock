@@ -1,10 +1,11 @@
 import { handleUpdateButton } from './updateItem.js';
 import { handleCheckoutButton } from './checkoutItem.js';
-
+import { handleCheckinButton } from './checkinItem.js';
 
 async function showItemModal(elem) {
     const modal = document.getElementById("item-modal");
     const item = JSON.parse(elem.dataset.item)
+    console.log(item);
     const deleteUrl = `/gallery/items/${encodeURIComponent(item._id)}`;
 
     // Get all boxes for dropdown in edit functionality
@@ -26,6 +27,7 @@ async function showItemModal(elem) {
             </button>
         </div>
         <p>Box: ${ item.box }</p>
+        <p id="item-checked-out-info" style= "display:none;"></p>
         <div>${ item.tags.map(t => `<span class="item-card-tag item-modal-tag-font">${ t }</span>`).join(' ')}</div>
         <div id="item-modal-controls">
             
@@ -45,7 +47,9 @@ async function showItemModal(elem) {
             <!-- right align all other buttons away from Delete to make it nicer -->
             <ul>
                 <button type="button" id="item-modal-edit-btn" class="item-modal-btn">Edit</button> 
-                <button type="button" id= "item-modal-checkout-btn" class="item-modal-btn"> Check Out </button>
+                <button type="button" id="item-modal-checkout-btn" class="item-modal-btn" ${item.checked_out ? "hidden" : ""}>Check Out</button>
+                <button type="button" id="item-modal-checkin-btn" class="item-modal-btn" ${item.checked_out ? "" : "hidden"}>Check In</button>
+
             </ul>
         </div>
     </div>`;
@@ -57,7 +61,12 @@ async function showItemModal(elem) {
     // handle update for editing
     handleUpdateButton(item, modal, boxes);
 
-    // handle checkout for items 
-    handleCheckoutButton(item, modal);
+    // handle checkout / checkin for items 
+    if (item.checked_out) {
+        handleCheckinButton(item, modal); // Check In button
+    } else {
+        handleCheckoutButton(item, modal); //Check Out button
+    }
 }
+
 window.showItemModal = showItemModal;

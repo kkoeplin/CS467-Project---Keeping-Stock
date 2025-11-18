@@ -67,7 +67,9 @@ def save_item():
         "tags": data.get("tags", []),
         "box_id": data.get("box_id"),
         "removed": "No",  # always no when first creating the item
-        "check_out": False  # Flag for checking out item
+        "checked_out": False,  # Flag for checking out item
+        "checked_out_by": "",
+        "checkout_date": ""
     }
     items_collection.insert_one(item)
     return jsonify({"success": True})
@@ -102,9 +104,30 @@ def item_checkout():
     items_collection.update_many(
         {"_id": {"$in": object_ids}},
         {"$set": {
-            "removed": "Yes",
+            "checked_out": True,
             "checked_out_by": user,
             "checkout_date": date
         }}
     )
     return jsonify({"success": True, "message": f"Item checked out by {user}."})
+
+@item_bp.route("/checkin", methods=["POST"])
+def item_checkin():
+    data = request.get_json()
+    item_ids = data.get("item_ids", [])
+
+    if not item_ids:
+        return jsonify({"success": False, "error": "No ID provided"}), 400
+
+    object_ids = [ObjectId(i) for i in item_ids]
+
+    items_collection.update_many(
+        {"_id": {"$in": object_ids}},
+        {"$set": {
+            "checked_out": False,
+            "removed": "No",
+            "checked_out_by": "",
+            "checkout_date": ""
+        }}
+    )
+    return jsonify({"success": True, "message": "Item checked."})
