@@ -16,7 +16,7 @@ app = Flask(__name__)
 db = init_db()
 app.config["DB"] = db
 
-app.config["AI_CLIENT"] = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# app.config["AI_CLIENT"] = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # Register blueprints
 app.register_blueprint(item_bp, url_prefix="/items")
