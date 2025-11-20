@@ -4,73 +4,88 @@
 
 export function handleUpdateButton(item, modal, boxes) {
     const editButton = modal.querySelector("#item-modal-edit-btn");
+    if (!editButton) return;
 
     editButton.onclick = () => {
-        const boxOptions = boxes.map(b => {
-            const selected = b._id === item.box_id ? "selected" : "";
-            return `<option value="${b._id}" ${selected}>${b.description}</option>`;
-        }).join("");
+        // Prevent multiple forms
+        let formContainer = modal.querySelector(".item-modal-edit");
+        if (formContainer) return; 
 
-        modal.innerHTML = `
-        <div class="item-modal-edit">
+        formContainer = document.createElement("div");
+        formContainer.className = "item-modal-edit";
+        formContainer.style = "border: 2px solid #0c0c0cff; padding: 20px; margin-top: 10px; border-radius: 5px; background-color: #f5f5f5;";
+
+        const boxOptions = boxes.map(b => `<option value="${b._id}" ${b._id === item.box_id ? "selected" : ""}>${b.description}</option>`).join("");
+
+        formContainer.innerHTML = `
             <h2>Edit Item</h2>
-            <p>Change the item description or location where the item is stored</p>
-            <form id="item-update-form" class="item-update-form">
-                <div class="form-group">
-                    <label for="description"><strong>Description of Item:</strong></label>
-                    <input type="text" id="description" name="description" value="${item.description}" required>
+            <form id="item-update-form">
+                <div>
+                    <label>Description</label>
+                    <input type="text" name="description" value="${item.description}" required>
                 </div>
-
-                <div class="form-group">
-                    <label for="box_id"><strong>Box or Storage Space:</strong></label>
-                    <select id="box_id" name="box_id">
-                        ${boxOptions}
-                    </select>
+                <div>
+                    <label>Box</label>
+                    <select name="box_id">${boxOptions}</select>
                 </div>
-
-                <div class="form-actions">
+                <div style="margin-top: 10px;">
                     <button type="submit">Save</button>
                     <button type="button" id="cancel-btn">Cancel</button>
                 </div>
             </form>
-        </div>
         `;
+        modal.appendChild(formContainer);
 
         // Cancel button
-        modal.querySelector("#cancel-btn").onclick = () => {
-            window.showItemModal({ dataset: { item: JSON.stringify(item) } });
+        formContainer.querySelector("#cancel-btn").onclick = () => {
+            formContainer.remove();
         };
 
-        // Submit the form and give feedback
-        modal.querySelector("#item-update-form").onsubmit = async (e) => {
+        // Submit
+        formContainer.querySelector("#item-update-form").onsubmit = async (e) => {
             e.preventDefault();
             const formData = new FormData(e.target);
-            const description = formData.get("description");
+            const description = formData.get("description").trim();
             const box_id = formData.get("box_id");
 
-            if (!description || !description.trim()) {
-                alert("Description cant be empty");
-                return;
-            }
+            if (!description) return alert("Description can't be empty");
 
             try {
-                const response = await fetch(`/gallery/items/${item._id}`, {
+                const res = await fetch(`/gallery/items/${item._id}`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ description, box_id })
                 });
-                const result = await response.json();
+                const result = await res.json();
 
                 if (result.status) {
-                    alert("Item updated");
-                    location.reload();
+                    // Update item object
+                    item.description = description;
+                    item.box_id = box_id;
+                    const boxObj = boxes.find(b => b._id === box_id);
+                    item.box = boxObj ? boxObj.description : item.box;
+
+                    // Update modal display
+                    modal.querySelector("h3").textContent = item.description;
+                    modal.querySelector("p").textContent = `Box: ${item.box}`;
+
+                    // Update gallery card
+                    const card = document.getElementById(`item-card-${item._id}`);
+                    if (card) {
+                        card.querySelector(".item-description").textContent = item.description;
+                        card.querySelector(".item-card-box").textContent = `Box: ${item.box}`;
+                    }
+
+                    formContainer.remove();
+                    alert("Item updated!");
                 } else {
-                    alert("Update failed");
+                    alert(result.error || "Update failed");
                 }
             } catch (err) {
                 console.error(err);
-                alert("Error updating the item");
+                alert("Error updating item");
             }
         };
     };
 }
+

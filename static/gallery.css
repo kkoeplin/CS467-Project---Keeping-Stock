@@ -276,3 +276,76 @@
     background-color: #ffe5e5;
 }
 
+/* Overlay behind forms inside the modal */
+.item-edit-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0,0,0,0.4);
+    z-index: 999;
+}
+
+/* Centered form inside the modal */
+.item-modal-checkout,
+.item-modal-edit {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 2px solid #0c0c0c;
+    padding: 20px;
+    max-width: 400px;
+    width: 90%;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    z-index: 1000;
+}
+
+/* Make form inputs full width and nice */
+.item-modal-checkout input,
+.item-modal-checkout select,
+.item-modal-edit input,
+.item-modal-edit select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 4px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+/* Buttons inside forms */
+.item-modal-checkout button,
+.item-modal-edit button {
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+}
+
+/* Save (submit) buttons in both edit and checkout forms */
+.item-modal-edit button[type="submit"],
+.item-modal-checkout button[type="submit"] {
+    background-color: #509b61 !important; /* green */
+    color: white !important;
+    border: none !important;
+}
+
+/* Cancel buttons in both edit and checkout forms */
+.item-modal-edit button#cancel-btn,
+.item-modal-checkout button#cancel-btn {
+    background-color: #b2555e !important; /* red */
+    color: white !important;
+    border: none !important;
+}
+
+/* Hover effects */
+.item-modal-edit button[type="submit"]:hover,
+.item-modal-checkout button[type="submit"]:hover {
+    background-color: #2f693b !important;
+}
+
+.item-modal-edit button#cancel-btn:hover,
+.item-modal-checkout button#cancel-btn:hover {
+    background-color: #dd2b3c !important;
+}
